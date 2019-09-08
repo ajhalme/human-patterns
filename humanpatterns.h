@@ -31,6 +31,7 @@ protected:
     void toggleButtonString();
     std::string GetAddress();
     std::string GetState();
+    void processFrames();
 
 protected slots:
    void handleStart();

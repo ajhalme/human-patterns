@@ -9,6 +9,9 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
+    ui->graphicsView->fitInView(&pixmap, Qt::KeepAspectRatio);
+
+    // IgnoreAspectRatio  KeepAspectRatio  KeepAspectRatioByExpanding
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 }
@@ -79,6 +82,8 @@ void HumanPatterns::handleStart()
     }
 
     ui->startButton->setEnabled(true);
+
+    processFrames();
 }
 
 void HumanPatterns::toggleButtonString()
@@ -102,5 +107,23 @@ std::string HumanPatterns::GetAddress()
 std::string HumanPatterns::GetState()
 {
     return ui->startButton->text().trimmed().toStdString();
+}
+
+void HumanPatterns::processFrames()
+{
+    using namespace cv;
+
+    Mat frame;
+    while(video.isOpened())
+    {
+        video >> frame;
+        if(!frame.empty())
+        {
+            QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+            QPixmap img = QPixmap::fromImage(qimg.rgbSwapped());
+            pixmap.setPixmap(img);
+        }
+        qApp->processEvents();
+    }
 }
 
