@@ -24,7 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="videoEdit">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -33,8 +33,11 @@
       <height>30</height>
      </rect>
     </property>
+    <property name="text">
+     <string>rtsp://192.168.0.111:554/12</string>
+    </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
       <x>680</x>

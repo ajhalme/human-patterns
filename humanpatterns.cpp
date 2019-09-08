@@ -9,6 +9,8 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
+
+    connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 }
 
 HumanPatterns::~HumanPatterns()
@@ -30,3 +32,75 @@ void HumanPatterns::closeEvent(QCloseEvent *event)
         event->accept();
     }
 }
+
+void HumanPatterns::openVideoByCameraIndex()
+{
+    bool isCamera;
+    int cameraIndex = ui->videoEdit->text().toInt(&isCamera);
+    if(isCamera)
+    {
+        if(!video.open(cameraIndex))
+        {
+            QMessageBox::critical(this,
+                "Camera Error",
+                "Make sure you entered a correct camera index,"
+                "<br>or that the camera is not being accessed by another program!");
+            return;
+        }
+    }
+}
+
+void HumanPatterns::openVideoByAddress()
+{
+    std::string address = GetAddress();
+    if(!video.open(address))
+    {
+        QMessageBox::critical(this,
+            "Video Error",
+            "Make sure you entered a correct and supported video file path,"
+            "<br>or a correct RTSP feed URL!");
+        return;
+    }
+}
+
+void HumanPatterns::handleStart()
+{
+    // rtsp://192.168.0.111:554/11
+    // rtsp://192.168.0.111:554/12
+
+    toggleButtonString();
+
+    ui->startButton->setEnabled(false);
+
+    if (video.isOpened()) {
+        video.release();
+    } else {
+        openVideoByAddress();
+    }
+
+    ui->startButton->setEnabled(true);
+}
+
+void HumanPatterns::toggleButtonString()
+{
+    const std::string start = "Start";
+    const std::string stop = "Stop";
+
+    std::string address = GetState();
+
+    if (address.compare(start) == 0)
+        ui->startButton->setText(stop.c_str());
+    else
+        ui->startButton->setText(start.c_str());
+}
+
+std::string HumanPatterns::GetAddress()
+{
+    return ui->videoEdit->text().trimmed().toStdString();
+}
+
+std::string HumanPatterns::GetState()
+{
+    return ui->startButton->text().trimmed().toStdString();
+}
+

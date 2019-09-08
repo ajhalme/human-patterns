@@ -26,6 +26,14 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void openVideoByCameraIndex();
+    void openVideoByAddress();
+    void toggleButtonString();
+    std::string GetAddress();
+    std::string GetState();
+
+protected slots:
+   void handleStart();
 
 private:
     QGraphicsPixmapItem pixmap;
