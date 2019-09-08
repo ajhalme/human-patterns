@@ -115,6 +115,12 @@ std::string HumanPatterns::GetState()
     return ui->startButton->text().trimmed().toStdString();
 }
 
+QPixmap frame2Img(cv::Mat frame)
+{
+    QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+    return QPixmap::fromImage(qimg.rgbSwapped());
+}
+
 void HumanPatterns::processFrames()
 {
     using namespace cv;
@@ -126,12 +132,9 @@ void HumanPatterns::processFrames()
         if(!raw.empty())
         {
             Mat frame = fp->ProcessFrame(raw);
-
-            QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
-            QPixmap img = QPixmap::fromImage(qimg.rgbSwapped());
+            QPixmap img = frame2Img(frame);
             pixmap.setPixmap(img);
         }
         qApp->processEvents();
     }
 }
-
