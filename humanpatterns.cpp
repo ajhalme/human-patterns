@@ -9,9 +9,11 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
-    ui->graphicsView->fitInView(&pixmap, Qt::KeepAspectRatio);
 
+    ui->graphicsView->fitInView(&pixmap, Qt::KeepAspectRatio);
     // IgnoreAspectRatio  KeepAspectRatio  KeepAspectRatioByExpanding
+
+    fp = new HPFrameProcessor();
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 }
@@ -113,12 +115,14 @@ void HumanPatterns::processFrames()
 {
     using namespace cv;
 
-    Mat frame;
+    Mat raw;
     while(video.isOpened())
     {
-        video >> frame;
-        if(!frame.empty())
+        video >> raw;
+        if(!raw.empty())
         {
+            Mat frame = fp->ProcessFrame(raw);
+
             QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
             QPixmap img = QPixmap::fromImage(qimg.rgbSwapped());
             pixmap.setPixmap(img);

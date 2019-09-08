@@ -11,6 +11,7 @@
 #include <QMessageBox>
 
 #include "opencv2/opencv.hpp"
+#include "frameprocessor.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class HumanPatterns; }
@@ -40,5 +41,7 @@ private:
     QGraphicsPixmapItem pixmap;
     cv::VideoCapture video;
     Ui::HumanPatterns *ui;
+    HPFrameProcessor *fp;
 };
+
 #endif // HUMANPATTERNS_H
