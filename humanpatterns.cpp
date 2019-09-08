@@ -77,6 +77,8 @@ void HumanPatterns::handleStart()
 
     ui->startButton->setEnabled(false);
 
+    qApp->processEvents();
+
     if (video.isOpened()) {
         video.release();
     } else {
@@ -84,6 +86,8 @@ void HumanPatterns::handleStart()
     }
 
     ui->startButton->setEnabled(true);
+
+    qApp->processEvents();
 
     processFrames();
 }
