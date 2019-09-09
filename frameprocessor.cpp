@@ -41,29 +41,32 @@ vector<Point2f> getPlayArea(Point mid, vector<vector<Point2f>> markers)
     return corners;
 }
 
-Mat HPFrameProcessor::ProcessFrame(Mat frame)
+void drawPlayArea(Mat frame, vector<vector<Point2f>> corners)
 {
-    Mat markered;
-    vector<int> ids;
-    vector<vector<Point2f>> corners, rejected;
-    Ptr<aruco::DetectorParameters> parameters;
+    Point mid = Point(frame.size[1]/2, frame.size[0]/2);
+    vector<Point2f> playarea = getPlayArea(mid, corners);
+    for (size_t i = 0; i < 4; i++) {
+        Point2f a = playarea[i];
+        Point2f b = playarea[(i+1) % 4];
+        line(frame, a, b, Scalar(0, 255, 0));
+    }
+}
 
-    frame.copyTo(markered);
+Mat HPFrameProcessor::ProcessFrame(Mat frame, HPConfig config)
+{
+    Mat processed;
+    vector<int> ids;
+    vector<vector<Point2f>> corners;
+
+    frame.copyTo(processed);
+
     cv::aruco::detectMarkers(frame, dict, corners, ids);
 
-    if (ids.size() > 0)
-        cv::aruco::drawDetectedMarkers(markered, corners, ids);
+    if (config.showDetectedMarkers && ids.size() > 0)
+        cv::aruco::drawDetectedMarkers(processed, corners, ids);
 
-    if (ids.size() == 4)
-    {
-        Point mid = Point(frame.size[1]/2, frame.size[0]/2);
-        vector<Point2f> playarea = getPlayArea(mid, corners);
-        for (size_t i = 0; i < 4; i++) {
-            Point2f a = playarea[i];
-            Point2f b = playarea[(i+1) % 4];
-            line(markered, a, b, Scalar(0, 255, 0));
-        }
-    }
+    if (config.showDetectedPlayArea && ids.size() == 4)
+        drawPlayArea(processed, corners);
 
-    return markered;
+    return processed;
 }

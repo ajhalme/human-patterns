@@ -12,6 +12,7 @@
 
 #include "opencv2/opencv.hpp"
 #include "frameprocessor.h"
+#include "config.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class HumanPatterns; }
@@ -37,11 +38,17 @@ protected:
 protected slots:
    void handleStart();
 
+private slots:
+   void on_showMarkersCheckBox_stateChanged(int arg1);
+
+   void on_showPlayAreaCheckBox_stateChanged(int arg1);
+
 private:
     QGraphicsPixmapItem pixmap;
     cv::VideoCapture video;
     Ui::HumanPatterns *ui;
     HPFrameProcessor *fp;
+    HPConfig *config;
 };
 
 #endif // HUMANPATTERNS_H

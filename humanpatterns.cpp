@@ -14,8 +14,9 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     // IgnoreAspectRatio  KeepAspectRatio  KeepAspectRatioByExpanding
 
     fp = new HPFrameProcessor();
+    config = new HPConfig();
 
-    connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
+    connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));       
 }
 
 HumanPatterns::~HumanPatterns()
@@ -117,7 +118,8 @@ std::string HumanPatterns::GetState()
 
 QPixmap frame2Img(cv::Mat frame)
 {
-    QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+    QImage qimg(frame.data, frame.cols, frame.rows, static_cast<int>(frame.step),
+                QImage::Format_RGB888);
     return QPixmap::fromImage(qimg.rgbSwapped());
 }
 
@@ -131,10 +133,20 @@ void HumanPatterns::processFrames()
         video >> raw;
         if(!raw.empty())
         {
-            Mat frame = fp->ProcessFrame(raw);
+            Mat frame = fp->ProcessFrame(raw, *config);
             QPixmap img = frame2Img(frame);
             pixmap.setPixmap(img);
         }
         qApp->processEvents();
     }
+}
+
+void HumanPatterns::on_showMarkersCheckBox_stateChanged(int)
+{
+    config->showDetectedMarkers = !config->showDetectedMarkers;
+}
+
+void HumanPatterns::on_showPlayAreaCheckBox_stateChanged(int)
+{
+    config->showDetectedPlayArea = !config->showDetectedPlayArea;
 }
