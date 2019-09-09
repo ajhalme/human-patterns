@@ -67,9 +67,9 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>10</y>
-      <width>131</width>
-      <height>54</height>
+      <y>11</y>
+      <width>147</width>
+      <height>83</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -84,6 +84,13 @@
       <widget class="QCheckBox" name="showPlayAreaCheckBox">
        <property name="text">
         <string>Show Play Area</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="applyTransformsCheckBox">
+       <property name="text">
+        <string>Apply Transforms</string>
        </property>
       </widget>
      </item>

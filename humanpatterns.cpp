@@ -14,7 +14,7 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     // IgnoreAspectRatio  KeepAspectRatio  KeepAspectRatioByExpanding
 
     fp = new HPFrameProcessor();
-    config = new HPConfig();
+    config = new HPConfig(HPConfig::SmallSize);
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));       
 }
@@ -149,4 +149,9 @@ void HumanPatterns::on_showMarkersCheckBox_stateChanged(int)
 void HumanPatterns::on_showPlayAreaCheckBox_stateChanged(int)
 {
     config->showDetectedPlayArea = !config->showDetectedPlayArea;
+}
+
+void HumanPatterns::on_applyTransformsCheckBox_stateChanged(int)
+{
+    config->applyTransforms = !config->applyTransforms;
 }
