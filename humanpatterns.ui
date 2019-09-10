@@ -63,13 +63,13 @@
      <string>Camera (RTSP address):</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>800</x>
       <y>11</y>
       <width>147</width>
-      <height>83</height>
+      <height>112</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -91,6 +91,13 @@
       <widget class="QCheckBox" name="applyTransformsCheckBox">
        <property name="text">
         <string>Apply Transforms</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cachePlayArea">
+       <property name="text">
+        <string>Cache Play Area</string>
        </property>
       </widget>
      </item>

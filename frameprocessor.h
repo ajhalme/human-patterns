@@ -15,6 +15,8 @@ public:
     cv::Mat ProcessFrame(cv::Mat frame, HPConfig config);
 protected:
     cv::Ptr<cv::aruco::Dictionary> dict;
+    vector<vector<Point2f>> cachedCorners;
+    vector<int> cachedIds;
 };
 
 #endif // FRAMEPROCESSOR_H

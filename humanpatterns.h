@@ -42,6 +42,7 @@ private slots:
    void on_showMarkersCheckBox_stateChanged(int);
    void on_showPlayAreaCheckBox_stateChanged(int);
    void on_applyTransformsCheckBox_stateChanged(int);
+   void on_cachePlayArea_stateChanged(int);
 
 private:
     QGraphicsPixmapItem pixmap;

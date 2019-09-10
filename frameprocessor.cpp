@@ -6,6 +6,8 @@ using namespace std;
 HPFrameProcessor::HPFrameProcessor()
 {
     dict = aruco::getPredefinedDictionary(aruco::DICT_ARUCO_ORIGINAL);
+    cachedCorners = {};
+    cachedIds = {};
 }
 
 bool sortClockWise(Point2f a, Point2f b, Point mid)
@@ -69,7 +71,16 @@ Mat HPFrameProcessor::ProcessFrame(Mat frame, HPConfig config)
 
     frame.copyTo(processed);
 
-    cv::aruco::detectMarkers(frame, dict, corners, ids);
+    if (config.cachedPlayArea && cachedCorners.size() > 0) {
+        corners = cachedCorners;
+        ids = cachedIds;
+    } else {
+        cv::aruco::detectMarkers(frame, dict, corners, ids);
+        if (ids.size() == 4) {
+            cachedCorners = corners;
+            cachedIds = ids;
+        }
+    }
 
     bool isQuatric = ids.size() == 4;
 

@@ -155,3 +155,8 @@ void HumanPatterns::on_applyTransformsCheckBox_stateChanged(int)
 {
     config->applyTransforms = !config->applyTransforms;
 }
+
+void HumanPatterns::on_cachePlayArea_stateChanged(int)
+{
+    config->cachedPlayArea = !config->cachedPlayArea;
+}

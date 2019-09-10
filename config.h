@@ -21,6 +21,7 @@ public:
     bool showDetectedMarkers = false;
     bool showDetectedPlayArea = false;
     bool applyTransforms = false;
+    bool cachedPlayArea = false;
 };
 
 #endif // CONFIG_H
