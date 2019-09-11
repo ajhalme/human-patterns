@@ -6,8 +6,8 @@ using namespace std;
 HPFrameProcessor::HPFrameProcessor()
 {
     dict = aruco::getPredefinedDictionary(aruco::DICT_ARUCO_ORIGINAL);
-    cachedCorners = {};
-    cachedIds = {};
+    playAreaCorners = {};
+    markerIds = {};
 }
 
 bool sortClockWise(Point2f a, Point2f b, Point mid)
@@ -56,46 +56,51 @@ void drawPlayArea(Mat frame, vector<vector<Point2f>> corners)
     }
 }
 
-void applyTransform(Mat input, Mat *output, vector<vector<Point2f>> points, HPConfig config)
+void applySquareTransform(Mat input, Mat *output, vector<vector<Point2f>> points, HPConfig *config)
 {
     vector<Point2f> playarea = getPlayArea(input, points);
-    Mat M = getPerspectiveTransform(playarea, config.targetShape);
-    warpPerspective(input, *output, M, config.targetSize);
+    Mat M = getPerspectiveTransform(playarea, config->targetShape);
+    warpPerspective(input, *output, M, config->targetSize);
 }
 
-Mat HPFrameProcessor::ProcessFrame(Mat frame, HPConfig config)
+void HPFrameProcessor::CacheState(cv::Mat frame, vector<int> ids,
+        vector<vector<Point2f>> corners, HPConfig *config)
 {
-    Mat processed;
+    markerIds = ids;
+    playAreaCorners = corners;
+    baseline = Mat(config->targetShape, CV_64FC1);
+    applySquareTransform(frame, &baseline, corners, config);
+}
+
+Mat HPFrameProcessor::ProcessRaw(Mat frame, HPConfig *config)
+{
     vector<int> ids;
     vector<vector<Point2f>> corners;
 
-    frame.copyTo(processed);
+    cv::aruco::detectMarkers(frame, dict, corners, ids);
 
-    if (config.cachedPlayArea && cachedCorners.size() > 0) {
-        corners = cachedCorners;
-        ids = cachedIds;
-    } else {
-        cv::aruco::detectMarkers(frame, dict, corners, ids);
-        if (ids.size() == 4) {
-            cachedCorners = corners;
-            cachedIds = ids;
-        }
-    }
+    if (config->showDetectedMarkers)
+        cv::aruco::drawDetectedMarkers(frame, corners, ids);
 
     bool isQuatric = ids.size() == 4;
 
-    if (config.showDetectedMarkers && ids.size() > 0)
-        cv::aruco::drawDetectedMarkers(processed, corners, ids);
+    if (!isQuatric) return frame;
 
-    if (config.showDetectedPlayArea && isQuatric)
-        drawPlayArea(processed, corners);
+    if (config->showDetectedPlayArea)
+        drawPlayArea(frame, corners);
 
-    if (config.applyTransforms && isQuatric)
-    {
-        Mat output = Mat(config.targetShape, CV_64FC1);
-        applyTransform(frame, &output, corners, config);
-        return output;
+    if (config->capturePlayArea) {
+        CacheState(frame, ids, corners, config);
+        config->capturePlayArea = false;
+        config->playAreaReady = true;
     }
 
-    return processed;
+    return frame;
+}
+
+Mat HPFrameProcessor::ProcessPlayArea(Mat frame, HPConfig *config)
+{
+    Mat output = Mat(config->targetShape, CV_64FC1);
+    applySquareTransform(frame, &output, playAreaCorners, config);
+    return output;
 }

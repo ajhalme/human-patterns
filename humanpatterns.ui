@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1059</width>
+    <width>1081</width>
     <height>600</height>
    </rect>
   </property>
@@ -46,11 +46,15 @@
       <height>30</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background: rgb(78, 154, 6);
+</string>
+    </property>
     <property name="text">
      <string>Start</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="cameraLabel">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -63,45 +67,77 @@
      <string>Camera (RTSP address):</string>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QGroupBox" name="captureGroup">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>11</y>
-      <width>147</width>
-      <height>112</height>
+      <x>790</x>
+      <y>0</y>
+      <width>281</width>
+      <height>101</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QCheckBox" name="showMarkersCheckBox">
-       <property name="text">
-        <string>Show Markers</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="showPlayAreaCheckBox">
-       <property name="text">
-        <string>Show Play Area</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="applyTransformsCheckBox">
-       <property name="text">
-        <string>Apply Transforms</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="cachePlayArea">
-       <property name="text">
-        <string>Cache Play Area</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="title">
+     <string>Capture Controls</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>147</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="captureTogglesLayout">
+      <item>
+       <widget class="QCheckBox" name="showMarkersCheckBox">
+        <property name="text">
+         <string>Show Markers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="showPlayAreaCheckBox">
+        <property name="text">
+         <string>Show Play Area</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>121</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="captureButtonsLayout">
+      <item>
+       <widget class="QPushButton" name="captureButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Capture
+Playarea</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="clearButton">
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -109,7 +145,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1059</width>
+     <width>1081</width>
      <height>22</height>
     </rect>
    </property>

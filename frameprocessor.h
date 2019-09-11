@@ -12,11 +12,21 @@ public:
     HPFrameProcessor();
     ~HPFrameProcessor();
 
-    cv::Mat ProcessFrame(cv::Mat frame, HPConfig config);
+    cv::Mat ProcessRaw(cv::Mat frame, HPConfig *config);
+    cv::Mat ProcessPlayArea(cv::Mat frame, HPConfig *config);
+
+    void CacheState(cv::Mat frame,
+                    vector<int> ids,
+                    vector<vector<Point2f>> corners,
+                    HPConfig *config);
 protected:
     cv::Ptr<cv::aruco::Dictionary> dict;
-    vector<vector<Point2f>> cachedCorners;
-    vector<int> cachedIds;
+
+    vector<int> markerIds;
+    vector<vector<Point2f>> playAreaCorners;
+    cv::Mat baseline;
+private:
+    void cacheState();
 };
 
 #endif // FRAMEPROCESSOR_H

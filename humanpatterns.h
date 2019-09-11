@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QStateMachine>
 
 #include "opencv2/opencv.hpp"
 #include "frameprocessor.h"
@@ -41,8 +42,8 @@ protected slots:
 private slots:
    void on_showMarkersCheckBox_stateChanged(int);
    void on_showPlayAreaCheckBox_stateChanged(int);
-   void on_applyTransformsCheckBox_stateChanged(int);
-   void on_cachePlayArea_stateChanged(int);
+   void on_captureButton_clicked();
+   void on_clearButton_clicked();
 
 private:
     QGraphicsPixmapItem pixmap;

@@ -16,7 +16,9 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     fp = new HPFrameProcessor();
     config = new HPConfig(HPConfig::SmallSize);
 
-    connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));       
+    connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
+
+    ui->captureGroup->setEnabled(false);
 }
 
 HumanPatterns::~HumanPatterns()
@@ -30,7 +32,7 @@ void HumanPatterns::closeEvent(QCloseEvent *event)
     {
         QMessageBox::warning(this,
             "Warning",
-            "Stop the video before closing the application!");
+            "Stop video capture before closing the application!");
             event->ignore();
     }
     else
@@ -74,36 +76,28 @@ void HumanPatterns::handleStart()
     // rtsp://192.168.0.111:554/11
     // rtsp://192.168.0.111:554/12
 
-    toggleButtonString();
-
     ui->startButton->setEnabled(false);
 
     qApp->processEvents();
 
     if (video.isOpened()) {
         video.release();
+        pixmap.hide();
+        ui->startButton->setText("Start");
+        ui->captureGroup->setEnabled(false);
     } else {
         openVideoByAddress();
+        pixmap.show();
+        ui->startButton->setText("Stop");
+        ui->captureGroup->setEnabled(true);
     }
 
     ui->startButton->setEnabled(true);
 
+
     qApp->processEvents();
 
     processFrames();
-}
-
-void HumanPatterns::toggleButtonString()
-{
-    const std::string start = "Start";
-    const std::string stop = "Stop";
-
-    std::string address = GetState();
-
-    if (address.compare(start) == 0)
-        ui->startButton->setText(stop.c_str());
-    else
-        ui->startButton->setText(start.c_str());
 }
 
 std::string HumanPatterns::GetAddress()
@@ -127,13 +121,21 @@ void HumanPatterns::processFrames()
 {
     using namespace cv;
 
-    Mat raw;
+    Mat raw, frame;
     while(video.isOpened())
     {
         video >> raw;
         if(!raw.empty())
-        {
-            Mat frame = fp->ProcessFrame(raw, *config);
+        {            
+            qApp->processEvents();
+
+            if (config->playAreaReady)
+                frame = fp->ProcessPlayArea(raw, config);
+            else
+                frame = fp->ProcessRaw(raw, config);
+
+            qApp->processEvents();
+
             QPixmap img = frame2Img(frame);
             pixmap.setPixmap(img);
         }
@@ -145,18 +147,17 @@ void HumanPatterns::on_showMarkersCheckBox_stateChanged(int)
 {
     config->showDetectedMarkers = !config->showDetectedMarkers;
 }
-
 void HumanPatterns::on_showPlayAreaCheckBox_stateChanged(int)
 {
     config->showDetectedPlayArea = !config->showDetectedPlayArea;
 }
-
-void HumanPatterns::on_applyTransformsCheckBox_stateChanged(int)
+void HumanPatterns::on_captureButton_clicked()
 {
-    config->applyTransforms = !config->applyTransforms;
+    config->capturePlayArea = !config->capturePlayArea;
+    ui->captureButton->setEnabled(false);
 }
-
-void HumanPatterns::on_cachePlayArea_stateChanged(int)
+void HumanPatterns::on_clearButton_clicked()
 {
-    config->cachedPlayArea = !config->cachedPlayArea;
+    config->playAreaReady = false;
+    ui->captureButton->setEnabled(true);
 }

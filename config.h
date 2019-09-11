@@ -20,8 +20,9 @@ public:
 
     bool showDetectedMarkers = false;
     bool showDetectedPlayArea = false;
-    bool applyTransforms = false;
-    bool cachedPlayArea = false;
+
+    bool capturePlayArea = false;
+    bool playAreaReady = false;
 };
 
 #endif // CONFIG_H
