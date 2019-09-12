@@ -21,12 +21,14 @@ SOURCES += \
     config.cpp \
     frameprocessor.cpp \
     main.cpp \
-    humanpatterns.cpp
+    humanpatterns.cpp \
+    patternMatcher.cpp
 
 HEADERS += \
     config.h \
     frameprocessor.h \
-    humanpatterns.h
+    humanpatterns.h \
+    patternMatcher.h
 
 FORMS += \
     humanpatterns.ui

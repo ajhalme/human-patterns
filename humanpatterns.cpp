@@ -13,8 +13,9 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     ui->graphicsView->fitInView(&pixmap, Qt::KeepAspectRatio);
     // IgnoreAspectRatio  KeepAspectRatio  KeepAspectRatioByExpanding
 
-    fp = new HPFrameProcessor();
-    config = new HPConfig(HPConfig::SmallSize);
+    config = new HPConfig(HPConfig::SmallSize, HPConfig::PatternSize);
+    fp = new HPFrameProcessor(config);
+    pm = new HPPatternMatcher(config);
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 
@@ -122,6 +123,9 @@ void HumanPatterns::processFrames()
     using namespace cv;
 
     Mat raw, frame;
+    Mat source = Mat(config->targetSize, CV_8UC3);
+    Mat target = Mat(config->targetSize, CV_8UC3);
+
     while(video.isOpened())
     {
         video >> raw;
@@ -129,10 +133,17 @@ void HumanPatterns::processFrames()
         {            
             qApp->processEvents();
 
-            if (config->playAreaReady)
-                frame = fp->ProcessPlayArea(raw, config);
+            if (config->playAreaReady) {
+                fp->ProcessPlayArea(raw, &source);
+                pm->getTarget(&target);
+                auto t1 = source.type();
+                auto t2 = target.type();
+                frame.release();
+                frame.push_back(source);
+                frame.push_back(target);
+            }
             else
-                frame = fp->ProcessRaw(raw, config);
+                fp->ProcessRaw(raw, &frame);
 
             qApp->processEvents();
 
@@ -160,4 +171,17 @@ void HumanPatterns::on_clearButton_clicked()
 {
     config->playAreaReady = false;
     ui->captureButton->setEnabled(true);
+}
+
+void HumanPatterns::on_patternButton_clicked()
+{
+    // TODO: load directory
+
+    QString fileName = QFileDialog::getOpenFileName(this,
+        "Select Pattern File", "", "HP Pattern (*.png);;All Files (*)");
+    QFileInfo patternFile(fileName);
+
+    ui->patternLabel->setText(patternFile.completeBaseName());
+
+    pm->LoadPatternFile(patternFile);
 }

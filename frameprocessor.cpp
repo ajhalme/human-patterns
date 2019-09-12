@@ -3,8 +3,9 @@
 using namespace cv;
 using namespace std;
 
-HPFrameProcessor::HPFrameProcessor()
+HPFrameProcessor::HPFrameProcessor(HPConfig *config)
 {
+    this->config = config;
     dict = aruco::getPredefinedDictionary(aruco::DICT_ARUCO_ORIGINAL);
     playAreaCorners = {};
     markerIds = {};
@@ -56,7 +57,7 @@ void drawPlayArea(Mat frame, vector<vector<Point2f>> corners)
     }
 }
 
-void applySquareTransform(Mat input, Mat *output, vector<vector<Point2f>> points, HPConfig *config)
+void HPFrameProcessor::applySquareTransform(Mat input, Mat *output, vector<vector<Point2f>> points)
 {
     vector<Point2f> playarea = getPlayArea(input, points);
     Mat M = getPerspectiveTransform(playarea, config->targetShape);
@@ -64,15 +65,15 @@ void applySquareTransform(Mat input, Mat *output, vector<vector<Point2f>> points
 }
 
 void HPFrameProcessor::CacheState(cv::Mat frame, vector<int> ids,
-        vector<vector<Point2f>> corners, HPConfig *config)
+        vector<vector<Point2f>> corners)
 {
     markerIds = ids;
     playAreaCorners = corners;
-    baseline = Mat(config->targetShape, CV_64FC1);
-    applySquareTransform(frame, &baseline, corners, config);
+    baseline = Mat(config->targetShape, CV_8UC3);
+    applySquareTransform(frame, &baseline, corners);
 }
 
-Mat HPFrameProcessor::ProcessRaw(Mat frame, HPConfig *config)
+void HPFrameProcessor::ProcessRaw(Mat frame, Mat *output)
 {
     vector<int> ids;
     vector<vector<Point2f>> corners;
@@ -84,23 +85,24 @@ Mat HPFrameProcessor::ProcessRaw(Mat frame, HPConfig *config)
 
     bool isQuatric = ids.size() == 4;
 
-    if (!isQuatric) return frame;
+    if (!isQuatric) {
+        frame.copyTo(*output);
+        return;
+    }
 
     if (config->showDetectedPlayArea)
         drawPlayArea(frame, corners);
 
     if (config->capturePlayArea) {
-        CacheState(frame, ids, corners, config);
+        CacheState(frame, ids, corners);
         config->capturePlayArea = false;
         config->playAreaReady = true;
     }
 
-    return frame;
+    frame.copyTo(*output);
 }
 
-Mat HPFrameProcessor::ProcessPlayArea(Mat frame, HPConfig *config)
+void HPFrameProcessor::ProcessPlayArea(Mat frame, Mat *output)
 {
-    Mat output = Mat(config->targetShape, CV_64FC1);
-    applySquareTransform(frame, &output, playAreaCorners, config);
-    return output;
+    applySquareTransform(frame, output, playAreaCorners);
 }

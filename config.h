@@ -4,19 +4,22 @@
 #include "opencv2/opencv.hpp"
 
 using namespace cv;
-using namespace std;
+using namespace std; 
 
 class HPConfig
 {
 public:
     const static int SmallSize = 250;
+    const static int PatternSize = 750;
 
 public:
-    HPConfig(int edge);
+    HPConfig(int edge, int patternEdge);
     ~HPConfig();
 
     Size targetSize;
     vector<Point2f> targetShape;
+    Size patternSize;
+    vector<Point2f> patternShape;
 
     bool showDetectedMarkers = false;
     bool showDetectedPlayArea = false;
