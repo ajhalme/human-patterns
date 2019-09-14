@@ -16,6 +16,7 @@
 #include "frameprocessor.h"
 #include "patternLoader.h"
 #include "patternMatcher.h"
+#include "hpGameDisplay.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class HumanPatterns; }
@@ -50,15 +51,20 @@ private slots:
 
    void on_patternButton_clicked();
 
+   void on_launchGameDisplay_clicked();
+
 private:
     QGraphicsPixmapItem pixmap;
     cv::VideoCapture video;
     Ui::HumanPatterns *ui;
 
+    QWidget *otherWindow;
+
     HPConfig *config;
     HPFrameProcessor *fp;
     HPPatternLoader *pl;
     HPPatternMatcher *pm;
+    HPGameDisplay *gameDisplay;
 };
 
 #endif // HUMANPATTERNS_H

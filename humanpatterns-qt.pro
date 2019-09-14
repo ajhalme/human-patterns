@@ -20,6 +20,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     config.cpp \
     frameprocessor.cpp \
+    hpGameDisplay.cpp \
     main.cpp \
     humanpatterns.cpp \
     patternLoader.cpp \
@@ -28,11 +29,13 @@ SOURCES += \
 HEADERS += \
     config.h \
     frameprocessor.h \
+    hpGameDisplay.h \
     humanpatterns.h \
     patternLoader.h \
     patternMatcher.h
 
 FORMS += \
+    hpgamedisplay.ui \
     humanpatterns.ui
 
 # Default rules for deployment.

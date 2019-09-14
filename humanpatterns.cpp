@@ -183,3 +183,11 @@ void HumanPatterns::on_patternButton_clicked()
 
     pl->LoadPatternFile(patternFile);
 }
+
+void HumanPatterns::on_launchGameDisplay_clicked()
+{
+    gameDisplay = new HPGameDisplay(this);
+    gameDisplay->setWindowFlags(Qt::Window);
+    gameDisplay->show();
+
+}
