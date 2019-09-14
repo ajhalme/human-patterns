@@ -18,11 +18,11 @@ bool sortClockWise(Point2f a, Point2f b, Point mid)
     return aang < bang;
 }
 
-vector<Point2f> getPlayArea(Mat frame, vector<vector<Point2f>> markers)
+vector<Point2f> getPlayArea(Mat *frame, vector<vector<Point2f>> markers)
 {
     vector<Point2f> corners;
 
-    Point mid = Point(frame.size[1]/2, frame.size[0]/2);
+    Point mid = Point(frame->size[1]/2, frame->size[0]/2);
 
     for (vector<Point2f> &marker : markers)
     {
@@ -47,21 +47,21 @@ vector<Point2f> getPlayArea(Mat frame, vector<vector<Point2f>> markers)
     return corners;
 }
 
-void drawPlayArea(Mat frame, vector<vector<Point2f>> corners)
+void drawPlayArea(Mat *frame, vector<vector<Point2f>> corners)
 {
     vector<Point2f> playarea = getPlayArea(frame, corners);
     for (size_t i = 0; i < 4; i++) {
         Point2f a = playarea[i];
         Point2f b = playarea[(i+1) % 4];
-        line(frame, a, b, Scalar(0, 255, 0));
+        line(*frame, a, b, Scalar(0, 255, 0));
     }
 }
 
-void HPFrameProcessor::applySquareTransform(Mat input, Mat *output, vector<vector<Point2f>> points)
+void HPFrameProcessor::applySquareTransform(Mat *input, Mat *output, vector<vector<Point2f>> points)
 {
     vector<Point2f> playarea = getPlayArea(input, points);
     Mat M = getPerspectiveTransform(playarea, config->targetShape);
-    warpPerspective(input, *output, M, config->targetSize);
+    warpPerspective(*input, *output, M, config->targetSize);
 }
 
 void HPFrameProcessor::capturePlayArea(vector<int> ids,
@@ -72,20 +72,20 @@ void HPFrameProcessor::capturePlayArea(vector<int> ids,
     config->playAreaReady = true;
 }
 
-void HPFrameProcessor::ProcessRaw(Mat frame, Mat *output)
+void HPFrameProcessor::ProcessRaw(Mat *frame, Mat *output)
 {
     vector<int> ids;
     vector<vector<Point2f>> corners;
 
-    cv::aruco::detectMarkers(frame, dict, corners, ids);
+    cv::aruco::detectMarkers(*frame, dict, corners, ids);
 
     if (config->showDetectedMarkers)
-        cv::aruco::drawDetectedMarkers(frame, corners, ids);
+        cv::aruco::drawDetectedMarkers(*frame, corners, ids);
 
     bool isQuatric = ids.size() == 4;
 
     if (!isQuatric) {
-        frame.copyTo(*output);
+        frame->copyTo(*output);
         return;
     }
 
@@ -95,10 +95,10 @@ void HPFrameProcessor::ProcessRaw(Mat frame, Mat *output)
     if (config->capturePlayArea)
         capturePlayArea(ids, corners);
 
-    frame.copyTo(*output);
+    frame->copyTo(*output);
 }
 
-void HPFrameProcessor::ProcessPlayArea(Mat frame, Mat *output)
+void HPFrameProcessor::ProcessPlayArea(Mat *frame, Mat *output)
 {
     applySquareTransform(frame, output, playAreaCorners);
 }

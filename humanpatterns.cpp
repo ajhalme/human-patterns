@@ -7,9 +7,10 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->captureGroup->setEnabled(false);
+
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
-
     ui->graphicsView->fitInView(&pixmap, Qt::KeepAspectRatio);
     // IgnoreAspectRatio  KeepAspectRatio  KeepAspectRatioByExpanding
 
@@ -20,7 +21,7 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 
-    ui->captureGroup->setEnabled(false);
+    devDebug();
 }
 
 HumanPatterns::~HumanPatterns()
@@ -41,6 +42,11 @@ void HumanPatterns::closeEvent(QCloseEvent *event)
     {
         event->accept();
     }
+}
+
+void HumanPatterns::devDebug() {
+    pm->LoadBaselineFile();
+    pl->LoadPatternFile(QFileInfo("../humanpatterns-qt/patterns/hp-pattern-1.svg.png"));
 }
 
 void HumanPatterns::openVideoByCameraIndex()
@@ -96,7 +102,6 @@ void HumanPatterns::handleStart()
 
     ui->startButton->setEnabled(true);
 
-
     qApp->processEvents();
 
     processFrames();
@@ -124,8 +129,7 @@ void HumanPatterns::processFrames()
     using namespace cv;
 
     Mat raw, frame;
-    Mat source = Mat(config->targetSize, CV_8UC3);
-    Mat target = Mat(config->targetSize, CV_8UC3);
+    Mat source = Mat(config->targetSize, HPConfig::HPImageType);
 
     while(video.isOpened())
     {
@@ -134,14 +138,8 @@ void HumanPatterns::processFrames()
         {            
             qApp->processEvents();
 
-            if (config->playAreaReady) {
-                fp->ProcessPlayArea(raw, &source);                
-                pm->MaybeSaveBaseline(source);
-                frame.release();
-                pm->MatchSourceAndTarget(source, pl->Current(), &frame);
-            }
-            else
-                fp->ProcessRaw(raw, &frame);
+            frame.release();
+            processFrame(&raw, &source, &frame);
 
             qApp->processEvents();
 
@@ -150,6 +148,18 @@ void HumanPatterns::processFrames()
         }
         qApp->processEvents();
     }
+}
+
+void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *target)
+{
+    if (!config->playAreaReady) {
+        fp->ProcessRaw(raw, target);
+        return;
+    }
+
+    fp->ProcessPlayArea(raw, source);
+    pm->MaybeSaveBaselineFile(source);
+    pm->MatchSourceAndTarget(source, pl->Current(), target);
 }
 
 void HumanPatterns::on_showMarkersCheckBox_stateChanged(int)
@@ -171,17 +181,24 @@ void HumanPatterns::on_clearButton_clicked()
     ui->captureButton->setEnabled(true);
 }
 
+void HumanPatterns::LoadPattern(QString patternFileName)
+{
+    QFileInfo patternFile(patternFileName);
+    ui->patternLabel->setText(patternFile.completeBaseName());
+    pl->LoadPatternFile(patternFile);
+}
+
 void HumanPatterns::on_patternButton_clicked()
 {
     // TODO: load directory
 
-    QString fileName = QFileDialog::getOpenFileName(this,
-        "Select Pattern File", "../humanpatterns-qt/patterns", "HP Pattern (*.png);;All Files (*)");
-    QFileInfo patternFile(fileName);
+    QString fileName = QFileDialog::getOpenFileName(
+                this,
+                "Select Pattern File",
+                config->patternDirectory,
+                "HP Pattern (*.png);;All Files (*)");
 
-    ui->patternLabel->setText(patternFile.completeBaseName());
-
-    pl->LoadPatternFile(patternFile);
+    LoadPattern(fileName);
 }
 
 void HumanPatterns::on_launchGameDisplay_clicked()
@@ -190,4 +207,8 @@ void HumanPatterns::on_launchGameDisplay_clicked()
     gameDisplay->setWindowFlags(Qt::Window);
     gameDisplay->show();
 
+}
+void HumanPatterns::on_saveBaseline_clicked()
+{
+    config->saveBaseline = true;
 }

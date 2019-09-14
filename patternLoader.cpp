@@ -6,7 +6,7 @@ using namespace std;
 HPPatternLoader::HPPatternLoader(HPConfig *config)
 {
     this->config = config;
-    targetPattern = Mat(config->targetSize, CV_8UC3);
+    targetPattern = Mat(config->targetSize, HPConfig::HPImageType);
 }
 
 void HPPatternLoader::LoadPatternFile(QFileInfo patternFile)
@@ -22,7 +22,7 @@ void HPPatternLoader::transformPattern(Mat *rawPattern)
     warpPerspective(*rawPattern, targetPattern, M, config->targetSize);
 }
 
-Mat HPPatternLoader::Current()
+Mat *HPPatternLoader::Current()
 {
-   return targetPattern;
+   return &targetPattern;
 }

@@ -12,8 +12,10 @@ public:
     HPPatternMatcher(HPConfig *config);
     ~HPPatternMatcher();
 
-    void MatchSourceAndTarget(Mat source, Mat target, Mat *outFrames);
-    void MaybeSaveBaseline(Mat source);
+    void MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames);
+    void MaybeSaveBaselineFile(Mat *source);
+    void SaveBaselineFile(Mat *source);
+    void LoadBaselineFile();
 
 protected:
     HPConfig *config;

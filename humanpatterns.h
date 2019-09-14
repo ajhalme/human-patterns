@@ -30,8 +30,12 @@ public:
     HumanPatterns(QWidget *parent = nullptr);
     ~HumanPatterns();
 
+    void LoadPattern(QString patternFileName);
+
 protected:
     void closeEvent(QCloseEvent *event);
+
+    void devDebug();
     void openVideoByCameraIndex();
     void openVideoByAddress();
     void toggleButtonString();
@@ -39,6 +43,7 @@ protected:
     std::string GetState();
 
     void processFrames();
+    void processFrame(Mat *raw, Mat *source, Mat *target);
 
 protected slots:
    void handleStart();
@@ -52,6 +57,8 @@ private slots:
    void on_patternButton_clicked();
 
    void on_launchGameDisplay_clicked();
+
+   void on_saveBaseline_clicked();
 
 private:
     QGraphicsPixmapItem pixmap;

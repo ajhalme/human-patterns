@@ -6,14 +6,16 @@
 
 #include "config.h"
 
+using namespace cv;
+
 class HPFrameProcessor
 {
 public:
     HPFrameProcessor(HPConfig *config);
     ~HPFrameProcessor();
 
-    void ProcessRaw(cv::Mat frame, cv::Mat *out);
-    void ProcessPlayArea(cv::Mat frame, cv::Mat *out);
+    void ProcessRaw(Mat *frame, Mat *out);
+    void ProcessPlayArea(Mat *frame, Mat *out);
 
 protected:    
     HPConfig *config;
@@ -23,7 +25,7 @@ protected:
 
 private:
     void capturePlayArea(vector<int> ids, vector<vector<Point2f>> corners);
-    void applySquareTransform(Mat input, Mat *output, vector<vector<Point2f>> points);
+    void applySquareTransform(Mat *input, Mat *output, vector<vector<Point2f>> points);
 };
 
 #endif // FRAMEPROCESSOR_H

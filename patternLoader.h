@@ -13,7 +13,7 @@ public:
     ~HPPatternLoader();
 
     void LoadPatternFile(QFileInfo patternFile);
-    Mat Current();
+    Mat *Current();
 
 protected:
     HPConfig *config;
