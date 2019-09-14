@@ -7,6 +7,15 @@ HPPatternMatcher::HPPatternMatcher(HPConfig *config)
 {
     this->config = config;
     baseline = Blank();
+
+    basedelta = Blank();
+    thresh = Blank();
+    fusion = Blank();
+    tfusion = Blank();
+    matchDiff = Blank();
+    matchDiffInv = Blank();
+    matchDiff2 = Blank();
+    matchDiff2Inv = Blank();
 }
 
 Mat HPPatternMatcher::Blank()
@@ -30,13 +39,29 @@ void HPPatternMatcher::LoadBaselineFile()
 }
 
 void HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames)
-{
-    vector<Mat> mats = {baseline, *source, *target};
+{    
+    cv::subtract(baseline, *source, basedelta);
+    cv::cvtColor(basedelta, basedelta, COLOR_BGR2GRAY);
+    cv::blur(basedelta, basedelta, Size(5,5));
+    cv::threshold(basedelta, thresh, 20, 255, THRESH_BINARY_INV);
+    cv::cvtColor(basedelta, basedelta, COLOR_GRAY2BGR);
+    cv::cvtColor(thresh, thresh, COLOR_GRAY2BGR);
+    cv::bitwise_not(basedelta, basedelta);
 
-    Mat delta = Blank();
-    cv::subtract(baseline, *source, delta);
+    cv::addWeighted(*source, 0.75, *target, 0.25, 0, fusion);
+    cv::addWeighted(thresh, 0.75, *target, 0.75, 0, tfusion);
 
-    mats.push_back(delta);
+    cv::subtract(thresh, *target, matchDiff);
+    cv::subtract(*target, thresh, matchDiff2);
+    cv::bitwise_not(matchDiff, matchDiffInv);
+    cv::bitwise_not(matchDiff2, matchDiff2Inv);
 
-    hconcat(mats, *outFrames);
+    Mat upper, lower;
+    vector<Mat> upperRow = {baseline, *source, *target, basedelta, thresh};
+    vector<Mat> lowerRow = {fusion, tfusion, matchDiff, matchDiffInv, matchDiff2Inv};
+
+    hconcat(upperRow, upper);
+    hconcat(lowerRow, lower);
+    vector<Mat> rows = {upper, lower};
+    vconcat(rows, *outFrames);
 }

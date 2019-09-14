@@ -4,8 +4,9 @@
 HumanPatterns::HumanPatterns(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::HumanPatterns)
-{
+{    
     ui->setupUi(this);
+    this->setGeometry(100,100,1600,800);
 
     ui->captureGroup->setEnabled(false);
 

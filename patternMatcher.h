@@ -22,6 +22,10 @@ protected:
 
     HPConfig *config;
     Mat baseline;
+
+    Mat basedelta, thresh;
+    Mat fusion, tfusion;
+    Mat matchDiff, matchDiffInv, matchDiff2, matchDiff2Inv;
 };
 
 #endif // PATTERNMATCHER_H
