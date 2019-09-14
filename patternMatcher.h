@@ -6,13 +6,32 @@
 #include "config.h"
 #include "frameprocessor.h"
 
+class HPMatchScore
+{
+private:
+    Mat scoring;
+    int PixelScore(Mat* frame);
+
+public:
+    HPMatchScore(Mat* base, Mat* pos, Mat* neg);
+
+    int score_pattern;
+    int score_positive_diff;
+    int score_negative_diff;
+
+    double score_true_pos;
+    double score_false_pos;
+    double quality;
+    double spill;
+};
+
 class HPPatternMatcher
 {
 public:
     HPPatternMatcher(HPConfig *config);
     ~HPPatternMatcher();
 
-    void MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames);
+    HPMatchScore MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames);
     void MaybeSaveBaselineFile(Mat *source);
     void SaveBaselineFile(Mat *source);
     void LoadBaselineFile();
@@ -24,7 +43,7 @@ protected:
     Mat baseline;
 
     Mat basedelta, thresh;
-    Mat fusion, tfusion;
+    Mat fusion, tfusion, targeti;
     Mat matchDiff, matchDiffInv, matchDiff2, matchDiff2Inv;
 };
 

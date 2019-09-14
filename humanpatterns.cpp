@@ -155,7 +155,9 @@ void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *target)
 
     fp->ProcessPlayArea(raw, source);
     pm->MaybeSaveBaselineFile(source);
-    pm->MatchSourceAndTarget(source, pl->Current(), target);
+
+    HPMatchScore score = pm->MatchSourceAndTarget(source, pl->Current(), target);
+    displayScore(score);
 }
 
 void HumanPatterns::on_showMarkersCheckBox_stateChanged(int)
@@ -218,8 +220,17 @@ void HumanPatterns::devDebug() { // DEBUG
     Mat frame;
     Mat raw = imread(config->debugFile.toStdString());
 
-    pm->MatchSourceAndTarget(&raw, pl->Current(), &frame);
+    HPMatchScore score = pm->MatchSourceAndTarget(&raw, pl->Current(), &frame);
+    displayScore(score);
 
     QPixmap img = frame2Img(&frame);
     pixmap.setPixmap(img);
+}
+
+void HumanPatterns::displayScore(HPMatchScore score)
+{
+    ui->score->display(score.quality);
+    ui->scorePos->display(score.score_true_pos);
+    ui->scoreNeg->display(score.score_false_pos);
+    ui->scoreQuality->display(score.quality);
 }

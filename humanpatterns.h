@@ -44,6 +44,7 @@ protected:
 
     void processFrames();
     void processFrame(Mat *raw, Mat *source, Mat *target);
+    void displayScore(HPMatchScore score);
 
 protected slots:
    void handleStart();
