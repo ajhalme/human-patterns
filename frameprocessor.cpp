@@ -64,13 +64,12 @@ void HPFrameProcessor::applySquareTransform(Mat input, Mat *output, vector<vecto
     warpPerspective(input, *output, M, config->targetSize);
 }
 
-void HPFrameProcessor::CacheState(cv::Mat frame, vector<int> ids,
+void HPFrameProcessor::capturePlayArea(vector<int> ids,
         vector<vector<Point2f>> corners)
 {
     markerIds = ids;
     playAreaCorners = corners;
-    baseline = Mat(config->targetShape, CV_8UC3);
-    applySquareTransform(frame, &baseline, corners);
+    config->playAreaReady = true;
 }
 
 void HPFrameProcessor::ProcessRaw(Mat frame, Mat *output)
@@ -93,11 +92,8 @@ void HPFrameProcessor::ProcessRaw(Mat frame, Mat *output)
     if (config->showDetectedPlayArea)
         drawPlayArea(frame, corners);
 
-    if (config->capturePlayArea) {
-        CacheState(frame, ids, corners);
-        config->capturePlayArea = false;
-        config->playAreaReady = true;
-    }
+    if (config->capturePlayArea)
+        capturePlayArea(ids, corners);
 
     frame.copyTo(*output);
 }

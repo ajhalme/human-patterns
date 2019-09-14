@@ -15,6 +15,7 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     config = new HPConfig(HPConfig::SmallSize, HPConfig::PatternSize);
     fp = new HPFrameProcessor(config);
+    pl = new HPPatternLoader(config);
     pm = new HPPatternMatcher(config);
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
@@ -134,13 +135,10 @@ void HumanPatterns::processFrames()
             qApp->processEvents();
 
             if (config->playAreaReady) {
-                fp->ProcessPlayArea(raw, &source);
-                pm->getTarget(&target);
-                auto t1 = source.type();
-                auto t2 = target.type();
+                fp->ProcessPlayArea(raw, &source);                
+                pm->MaybeSaveBaseline(source);
                 frame.release();
-                frame.push_back(source);
-                frame.push_back(target);
+                pm->MatchSourceAndTarget(source, pl->Current(), &frame);
             }
             else
                 fp->ProcessRaw(raw, &frame);
@@ -178,10 +176,10 @@ void HumanPatterns::on_patternButton_clicked()
     // TODO: load directory
 
     QString fileName = QFileDialog::getOpenFileName(this,
-        "Select Pattern File", "", "HP Pattern (*.png);;All Files (*)");
+        "Select Pattern File", "../humanpatterns-qt/patterns", "HP Pattern (*.png);;All Files (*)");
     QFileInfo patternFile(fileName);
 
     ui->patternLabel->setText(patternFile.completeBaseName());
 
-    pm->LoadPatternFile(patternFile);
+    pl->LoadPatternFile(patternFile);
 }

@@ -14,6 +14,7 @@
 #include "opencv2/opencv.hpp"
 #include "config.h"
 #include "frameprocessor.h"
+#include "patternLoader.h"
 #include "patternMatcher.h"
 
 QT_BEGIN_NAMESPACE
@@ -53,8 +54,10 @@ private:
     QGraphicsPixmapItem pixmap;
     cv::VideoCapture video;
     Ui::HumanPatterns *ui;
-    HPFrameProcessor *fp;
+
     HPConfig *config;
+    HPFrameProcessor *fp;
+    HPPatternLoader *pl;
     HPPatternMatcher *pm;
 };
 

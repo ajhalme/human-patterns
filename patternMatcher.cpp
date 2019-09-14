@@ -6,23 +6,20 @@ using namespace std;
 HPPatternMatcher::HPPatternMatcher(HPConfig *config)
 {
     this->config = config;
-    targetPattern = Mat(config->targetSize, CV_8UC3);
 }
 
-void HPPatternMatcher::LoadPatternFile(QFileInfo patternFile)
+void HPPatternMatcher::MatchSourceAndTarget(Mat source, Mat target, Mat *outFrames)
 {
-    auto pathString = patternFile.absoluteFilePath().toStdString();
-    Mat rawPattern = cv::imread(String(pathString), cv::IMREAD_COLOR);
-    TransformPattern(&rawPattern);
+    Mat arr[] = {baseline, source, target};
+    hconcat(arr, 3, *outFrames);
 }
 
-void HPPatternMatcher::TransformPattern(Mat *rawPattern)
+void HPPatternMatcher::MaybeSaveBaseline(Mat source)
 {
-    Mat M = getPerspectiveTransform(config->patternShape, config->targetShape);
-    warpPerspective(*rawPattern, targetPattern, M, config->targetSize);
+    if (!config->capturePlayArea) return;
+
+    source.copyTo(baseline);
+
+    config->capturePlayArea = false;
 }
 
-void HPPatternMatcher::getTarget(Mat *output)
-{
-    targetPattern.copyTo(*output);
-}
