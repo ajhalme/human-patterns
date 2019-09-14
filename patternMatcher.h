@@ -18,8 +18,10 @@ public:
     void LoadBaselineFile();
 
 protected:
+    Mat Blank();
+
     HPConfig *config;
-    cv::Mat baseline;
+    Mat baseline;
 };
 
 #endif // PATTERNMATCHER_H

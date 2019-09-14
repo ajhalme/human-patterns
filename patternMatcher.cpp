@@ -6,7 +6,12 @@ using namespace std;
 HPPatternMatcher::HPPatternMatcher(HPConfig *config)
 {
     this->config = config;
-    baseline = Mat(config->targetSize, HPConfig::HPImageType);
+    baseline = Blank();
+}
+
+Mat HPPatternMatcher::Blank()
+{
+    return Mat(config->targetSize, HPConfig::HPImageType);
 }
 
 void HPPatternMatcher::MaybeSaveBaselineFile(Mat *source)
@@ -26,6 +31,12 @@ void HPPatternMatcher::LoadBaselineFile()
 
 void HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames)
 {
-    Mat arr[] = {baseline, *source, *target};
-    hconcat(arr, 3, *outFrames);
+    vector<Mat> mats = {baseline, *source, *target};
+
+    Mat delta = Blank();
+    cv::subtract(baseline, *source, delta);
+
+    mats.push_back(delta);
+
+    hconcat(mats, *outFrames);
 }
