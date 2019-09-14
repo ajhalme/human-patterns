@@ -44,9 +44,11 @@ void HumanPatterns::closeEvent(QCloseEvent *event)
     }
 }
 
-void HumanPatterns::devDebug() {
-    pm->LoadBaselineFile();
-    pl->LoadPatternFile(QFileInfo("../humanpatterns-qt/patterns/hp-pattern-1.svg.png"));
+QPixmap frame2Img(Mat *frame)
+{
+    QImage qimg(frame->data, frame->cols, frame->rows, static_cast<int>(frame->step),
+                QImage::Format_RGB888);
+    return QPixmap::fromImage(qimg.rgbSwapped());
 }
 
 void HumanPatterns::openVideoByCameraIndex()
@@ -117,13 +119,6 @@ std::string HumanPatterns::GetState()
     return ui->startButton->text().trimmed().toStdString();
 }
 
-QPixmap frame2Img(cv::Mat frame)
-{
-    QImage qimg(frame.data, frame.cols, frame.rows, static_cast<int>(frame.step),
-                QImage::Format_RGB888);
-    return QPixmap::fromImage(qimg.rgbSwapped());
-}
-
 void HumanPatterns::processFrames()
 {
     using namespace cv;
@@ -143,7 +138,7 @@ void HumanPatterns::processFrames()
 
             qApp->processEvents();
 
-            QPixmap img = frame2Img(frame);
+            QPixmap img = frame2Img(&frame);
             pixmap.setPixmap(img);
         }
         qApp->processEvents();
@@ -211,4 +206,19 @@ void HumanPatterns::on_launchGameDisplay_clicked()
 void HumanPatterns::on_saveBaseline_clicked()
 {
     config->saveBaseline = true;
+}
+
+
+
+void HumanPatterns::devDebug() { // DEBUG
+    pm->LoadBaselineFile();
+    pl->LoadPatternFile(QFileInfo("../humanpatterns-qt/patterns/hp-pattern-1.svg.png"));
+
+    Mat frame;
+    Mat raw = imread(config->debugFile.toStdString());
+
+    pm->MatchSourceAndTarget(&raw, pl->Current(), &frame);
+
+    QPixmap img = frame2Img(&frame);
+    pixmap.setPixmap(img);
 }

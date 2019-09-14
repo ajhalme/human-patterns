@@ -31,6 +31,7 @@ public:
 
     bool saveBaseline = false;
     const QString baselineFile = "../humanpatterns-qt/baseline.png";
+    const QString debugFile = "../humanpatterns-qt/debug.png";
     const QString patternDirectory = "../humanpatterns-qt/patterns";
 };
 
