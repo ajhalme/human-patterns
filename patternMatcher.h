@@ -31,6 +31,8 @@ public:
     HPPatternMatcher(HPConfig *config);
     ~HPPatternMatcher();
 
+    Mat thresh, combined;
+
     HPMatchScore MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames);
     void MaybeSaveBaselineFile(Mat *source);
     void SaveBaselineFile(Mat *source);
@@ -42,8 +44,7 @@ protected:
     HPConfig *config;
     Mat baseline;
 
-    Mat basedelta, thresh;
-    Mat fusion, tfusion, targeti;
+    Mat basedelta, fusion, tfusion, targeti;
     Mat matchDiff, matchDiffInv, matchDiff2, matchDiff2Inv;
 };
 

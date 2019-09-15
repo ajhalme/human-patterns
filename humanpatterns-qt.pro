@@ -27,6 +27,7 @@ SOURCES += \
     patternMatcher.cpp
 
 HEADERS += \
+    common.h \
     config.h \
     frameprocessor.h \
     hpGameDisplay.h \

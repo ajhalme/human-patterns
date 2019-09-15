@@ -15,55 +15,49 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="4" column="0">
-     <widget class="QLabel" name="cameraLabel">
-      <property name="text">
-       <string>Camera (RTSP address):</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="3">
-     <layout class="QHBoxLayout" name="patternLayout">
+    <item row="3" column="0" colspan="3">
+     <layout class="QHBoxLayout" name="scoreBar">
       <item>
-       <widget class="QPushButton" name="patternButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Pattern...</string>
+       <widget class="QLCDNumber" name="scorePos">
+        <property name="styleSheet">
+         <string notr="true">background: rgb(133, 181, 215) </string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="patternLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QLCDNumber" name="scoreNeg">
+        <property name="styleSheet">
+         <string notr="true">background: rgb(232, 193, 193)</string>
         </property>
-        <property name="text">
-         <string>Select pattern file</string>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLCDNumber" name="scoreQuality">
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background: rgb(161, 197, 169)</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="4" column="2">
-     <widget class="QPushButton" name="startButton">
-      <property name="styleSheet">
-       <string notr="true">background: rgb(78, 154, 6);
-</string>
+    <item row="2" column="4">
+     <widget class="QPushButton" name="saveBaseline">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="text">
-       <string>Start</string>
+       <string>Save
+Baseline</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
+    <item row="0" column="4">
      <widget class="QGroupBox" name="captureGroup">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -133,14 +127,44 @@ Playarea</string>
       </layout>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="videoEdit">
+    <item row="4" column="4">
+     <layout class="QHBoxLayout" name="patternLayout">
+      <item>
+       <widget class="QPushButton" name="patternButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Pattern...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="patternLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Select pattern file</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="cameraLabel">
       <property name="text">
-       <string>rtsp://192.168.0.111:554/12</string>
+       <string>Camera (RTSP address):</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="3" colspan="3">
+    <item row="0" column="0" rowspan="3" colspan="4">
      <widget class="QGraphicsView" name="graphicsView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -150,38 +174,36 @@ Playarea</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="0" colspan="3">
-     <layout class="QHBoxLayout" name="scoreBar">
-      <item>
-       <widget class="QLCDNumber" name="score"/>
-      </item>
-      <item>
-       <widget class="QLCDNumber" name="scorePos">
-        <property name="styleSheet">
-         <string notr="true">background: rgb(133, 181, 215) </string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLCDNumber" name="scoreNeg">
-        <property name="styleSheet">
-         <string notr="true">background: rgb(232, 193, 193)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLCDNumber" name="scoreQuality">
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background: rgb(238, 238, 236)</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <item row="3" column="3" rowspan="2">
+     <widget class="QPushButton" name="startButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>80</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>80</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(78, 154, 6);
+</string>
+      </property>
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
     </item>
-    <item row="3" column="3">
+    <item row="3" column="4">
      <widget class="QPushButton" name="launchGameDisplay">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
@@ -195,17 +217,10 @@ Game Display</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="3">
-     <widget class="QPushButton" name="saveBaseline">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
+    <item row="4" column="1" colspan="2">
+     <widget class="QLineEdit" name="videoEdit">
       <property name="text">
-       <string>Save
-Baseline</string>
+       <string>rtsp://192.168.0.111:554/12</string>
       </property>
      </widget>
     </item>

@@ -11,36 +11,101 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Human Patterns</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
     <layout class="QGridLayout" name="viewsGrid">
-     <item row="1" column="1">
-      <widget class="QGraphicsView" name="mashupView">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QGraphicsView" name="patternView">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLCDNumber" name="lcdTimer"/>
-     </item>
      <item row="0" column="0" rowspan="3">
-      <widget class="QGraphicsView" name="mainView"/>
+      <widget class="QGraphicsView" name="combinedView">
+       <property name="styleSheet">
+        <string notr="true">background: rgb(222, 222, 222)
+</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3" rowspan="3">
+      <layout class="QGridLayout" name="gridLayout_2" columnminimumwidth="0">
+       <item row="1" column="0">
+        <widget class="QGraphicsView" name="inputView">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLCDNumber" name="lcdTimer">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QGraphicsView" name="patternView">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLCDNumber" name="scorePositive">
+           <property name="styleSheet">
+            <string notr="true">background: rgb(133, 181, 215)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLCDNumber" name="scoreNegative">
+           <property name="styleSheet">
+            <string notr="true">background: rgb(232, 193, 193)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLCDNumber" name="scoreQuality">
+           <property name="styleSheet">
+            <string notr="true">background: rgb(161, 197, 169)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

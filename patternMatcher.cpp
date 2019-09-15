@@ -16,6 +16,7 @@ HPPatternMatcher::HPPatternMatcher(HPConfig *config)
     matchDiffInv = Blank();
     matchDiff2 = Blank();
     matchDiff2Inv = Blank();
+    combined = Blank();
 }
 
 Mat HPPatternMatcher::Blank()
@@ -38,6 +39,25 @@ void HPPatternMatcher::LoadBaselineFile()
     baseline = imread(config->baselineFile.toStdString());
 }
 
+void static TintFrames(Mat *target, Mat *targeti, Mat *matchDiff, Mat* matchDiff2, Mat* combined)
+{
+    Mat mask;
+    Scalar blue = Scalar(222,184,143);
+    Scalar red = Scalar(145,145,222);
+    Scalar purple = Scalar(148,80,155);
+    Scalar tint_lower = Scalar(128, 128, 128);
+    Scalar tint_upper = Scalar(255, 255, 255);
+    target->copyTo(*combined);
+    cv::inRange(*targeti, tint_lower, tint_upper, mask);
+    combined->setTo(purple, mask);
+    cv::inRange(*matchDiff, tint_lower, tint_upper, mask);
+    matchDiff->setTo(blue, mask);
+    combined->setTo(blue, mask);
+    cv::inRange(*matchDiff2, tint_lower, tint_upper, mask);
+    matchDiff2->setTo(red, mask);
+    combined->setTo(red, mask);
+}
+
 HPMatchScore HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames)
 {    
     cv::subtract(baseline, *source, basedelta);
@@ -48,19 +68,24 @@ HPMatchScore HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Ma
     cv::cvtColor(thresh, thresh, COLOR_GRAY2BGR);
     cv::bitwise_not(basedelta, basedelta);
 
+    // Blend
     cv::addWeighted(*source, 0.75, *target, 0.25, 0, fusion);
     cv::addWeighted(thresh, 0.75, *target, 0.75, 0, tfusion);
 
+    // Diffs
     cv::subtract(thresh, *target, matchDiff);
     cv::subtract(*target, thresh, matchDiff2);
     cv::bitwise_not(*target, targeti);
     cv::bitwise_not(matchDiff, matchDiffInv);
     cv::bitwise_not(matchDiff2, matchDiff2Inv);
 
+    // Tint
+    TintFrames(target, &targeti, &matchDiff, &matchDiff2, &combined);
+
+    // Prepare for drawing
     Mat upper, lower;
     vector<Mat> upperRow = {baseline, *source, *target, basedelta, thresh};
-    vector<Mat> lowerRow = {fusion, targeti, matchDiff, matchDiff2, matchDiff2Inv};
-
+    vector<Mat> lowerRow = {fusion, targeti, matchDiff, matchDiff2, combined};
     hconcat(upperRow, upper);
     hconcat(lowerRow, lower);
     vector<Mat> rows = {upper, lower};

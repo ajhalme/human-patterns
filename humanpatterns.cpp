@@ -1,3 +1,4 @@
+#include "common.h"
 #include "humanpatterns.h"
 #include "ui_humanpatterns.h"
 
@@ -43,13 +44,6 @@ void HumanPatterns::closeEvent(QCloseEvent *event)
     {
         event->accept();
     }
-}
-
-QPixmap frame2Img(Mat *frame)
-{
-    QImage qimg(frame->data, frame->cols, frame->rows, static_cast<int>(frame->step),
-                QImage::Format_RGB888);
-    return QPixmap::fromImage(qimg.rgbSwapped());
 }
 
 void HumanPatterns::openVideoByCameraIndex()
@@ -139,24 +133,24 @@ void HumanPatterns::processFrames()
 
             qApp->processEvents();
 
-            QPixmap img = frame2Img(&frame);
+            QPixmap img = hp::frame2Img(&frame);
             pixmap.setPixmap(img);
         }
         qApp->processEvents();
     }
 }
 
-void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *target)
+void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *outFrames)
 {
     if (!config->playAreaReady) {
-        fp->ProcessRaw(raw, target);
+        fp->ProcessRaw(raw, outFrames);
         return;
     }
 
     fp->ProcessPlayArea(raw, source);
     pm->MaybeSaveBaselineFile(source);
 
-    HPMatchScore score = pm->MatchSourceAndTarget(source, pl->Current(), target);
+    HPMatchScore score = pm->MatchSourceAndTarget(source, pl->Current(), outFrames);
     displayScore(score);
 }
 
@@ -214,23 +208,34 @@ void HumanPatterns::on_saveBaseline_clicked()
 
 
 void HumanPatterns::devDebug() { // DEBUG
+    qApp->processEvents();
+
     pm->LoadBaselineFile();
     pl->LoadPatternFile(QFileInfo("../humanpatterns-qt/patterns/hp-pattern-1.svg.png"));
+
+    qApp->processEvents();
 
     Mat frame;
     Mat raw = imread(config->debugFile.toStdString());
 
+    qApp->processEvents();
+
+    on_launchGameDisplay_clicked();
+
+    qApp->processEvents();
+
     HPMatchScore score = pm->MatchSourceAndTarget(&raw, pl->Current(), &frame);
     displayScore(score);
 
-    QPixmap img = frame2Img(&frame);
+    QPixmap img = hp::frame2Img(&frame);
     pixmap.setPixmap(img);
 }
 
 void HumanPatterns::displayScore(HPMatchScore score)
 {
-    ui->score->display(score.quality);
     ui->scorePos->display(score.score_true_pos);
     ui->scoreNeg->display(score.score_false_pos);
     ui->scoreQuality->display(score.quality);
+
+    gameDisplay->SetDisplay(score, &pm->thresh, pl->Current(), &pm->combined);
 }

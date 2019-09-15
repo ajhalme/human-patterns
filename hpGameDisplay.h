@@ -4,6 +4,10 @@
 #include <QTimer>
 #include <QWidget>
 #include <QLCDNumber>
+#include <QPixmap>
+#include <QGraphicsPixmapItem>
+
+#include "patternMatcher.h"
 
 namespace Ui {
     class HPGameDisplay;
@@ -17,9 +21,15 @@ public:
     explicit HPGameDisplay(QWidget *parent = nullptr);
     ~HPGameDisplay();
 
-private:
+    void SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined);
+
+protected:
     Ui::HPGameDisplay *ui;
     int tickCounter;
+    QGraphicsPixmapItem combinedPixmap;
+    QGraphicsPixmapItem patternPixmap;
+    QGraphicsPixmapItem inputPixmap;
+    QString qs_pos, qs_neg, qs_quality;
 
 private slots:
     void tick();
