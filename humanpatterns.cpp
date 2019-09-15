@@ -14,7 +14,10 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
     ui->graphicsView->fitInView(&pixmap, Qt::KeepAspectRatio);
-    // IgnoreAspectRatio  KeepAspectRatio  KeepAspectRatioByExpanding
+
+    ui->scoreNeg->setDigitCount(2);
+    ui->scorePos->setDigitCount(2);
+    ui->scoreQuality->setDigitCount(2);
 
     config = new HPConfig(HPConfig::SmallSize, HPConfig::PatternSize);
     fp = new HPFrameProcessor(config);
@@ -23,7 +26,29 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 
-    devDebug();
+    devDebug();   
+}
+
+void HumanPatterns::centerToScreen(QWidget* widget) {
+  if (!widget)
+    return;
+  QList<QScreen *> screens = QGuiApplication::screens();
+  if (screens.length() < 2) return;
+
+  QScreen *external;
+  QScreen *current = QGuiApplication::screenAt(QCursor::pos());
+  if (current->name() != screens[0]->name())
+      external = screens[0];
+  else
+      external = screens[1];
+
+  QRect geom = external->availableGeometry();
+
+  int desk_x = geom.width();
+  int desk_y = geom.height();
+  int x = widget->width();
+  int y = widget->height();
+  widget->move(desk_x/2 - x/2 + geom.left(), desk_y/2 - y/2 + geom.top());
 }
 
 HumanPatterns::~HumanPatterns()
@@ -49,7 +74,7 @@ void HumanPatterns::closeEvent(QCloseEvent *event)
 void HumanPatterns::openVideoByCameraIndex()
 {
     bool isCamera;
-    int cameraIndex = ui->videoEdit->text().toInt(&isCamera);
+    int cameraIndex = ui->videoSourceEdit->text().toInt(&isCamera);
     if(isCamera)
     {
         if(!video.open(cameraIndex))
@@ -106,7 +131,7 @@ void HumanPatterns::handleStart()
 
 std::string HumanPatterns::GetAddress()
 {
-    return ui->videoEdit->text().trimmed().toStdString();
+    return ui->videoSourceEdit->text().trimmed().toStdString();
 }
 
 std::string HumanPatterns::GetState()
@@ -194,11 +219,11 @@ void HumanPatterns::on_patternButton_clicked()
 }
 
 void HumanPatterns::on_launchGameDisplay_clicked()
-{
+{   
     gameDisplay = new HPGameDisplay(this);
     gameDisplay->setWindowFlags(Qt::Window);
-    gameDisplay->show();
-
+    gameDisplay->showMaximized();
+    centerToScreen(gameDisplay);
 }
 void HumanPatterns::on_saveBaseline_clicked()
 {

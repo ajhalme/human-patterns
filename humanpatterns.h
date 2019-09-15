@@ -2,6 +2,10 @@
 #define HUMANPATTERNS_H
 
 #include <QMainWindow>
+#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
+
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
@@ -35,9 +39,10 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 
+    void centerToScreen(QWidget* widget);
     void devDebug();
     void openVideoByCameraIndex();
-    void openVideoByAddress();
+    void openVideoByAddress();    
     void toggleButtonString();
     std::string GetAddress();
     std::string GetState();

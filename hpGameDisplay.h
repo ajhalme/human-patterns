@@ -29,7 +29,6 @@ protected:
     QGraphicsPixmapItem combinedPixmap;
     QGraphicsPixmapItem patternPixmap;
     QGraphicsPixmapItem inputPixmap;
-    QString qs_pos, qs_neg, qs_quality;
 
 private slots:
     void tick();

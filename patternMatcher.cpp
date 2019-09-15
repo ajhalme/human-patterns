@@ -100,9 +100,9 @@ HPMatchScore::HPMatchScore(Mat* base, Mat* pos, Mat* neg)
     score_positive_diff = PixelScore(pos);
     score_negative_diff = PixelScore(neg);
 
-    score_true_pos = 100 - round((100.0 * score_positive_diff) / score_pattern);
-    score_false_pos = round((100.0 * score_negative_diff) / score_pattern);
-    quality = score_true_pos - (0.5)*score_false_pos;
+    score_true_pos = static_cast<int>(100 - round((100.0 * score_positive_diff) / score_pattern));
+    score_false_pos = static_cast<int>(round((100.0 * score_negative_diff) / score_pattern));
+    quality = static_cast<int>(round(score_true_pos - (0.5)*score_false_pos));
     if (quality < 0) quality = 0;
     spill = score_false_pos;
 }

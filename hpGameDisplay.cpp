@@ -65,12 +65,9 @@ QPixmap scaleToView(QGraphicsView *view, QPixmap pmap)
 
 void HPGameDisplay::SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined)
 {
-    qs_pos.sprintf("%02ld", std::lround(score.score_true_pos));
-    ui->scorePositive->display(qs_pos);
-    qs_neg.sprintf("%02ld", std::lround(score.score_false_pos));
-    ui->scoreNegative->display(qs_neg);
-    qs_quality.sprintf("%02ld", std::lround(score.quality));
-    ui->scoreQuality->display(qs_quality);
+    ui->scorePositive->display(score.score_true_pos);
+    ui->scoreNegative->display(score.score_false_pos);
+    ui->scoreQuality->display(score.quality);
 
     QPixmap pmap = hp::frame2Img(combined);
     combinedPixmap.setPixmap(scaleToView(ui->combinedView, pmap));

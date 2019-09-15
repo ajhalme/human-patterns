@@ -19,10 +19,10 @@ public:
     int score_positive_diff;
     int score_negative_diff;
 
-    double score_true_pos;
-    double score_false_pos;
-    double quality;
-    double spill;
+    int score_true_pos;
+    int score_false_pos;
+    int quality;
+    int spill;
 };
 
 class HPPatternMatcher
