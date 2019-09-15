@@ -37,6 +37,7 @@ public:
     const string persistenceFile = "../humanpatterns-qt/config.yaml";
 
     int blurValue = 5;
+    int threshValue = 20;
 };
 
 #endif // CONFIG_H

@@ -59,18 +59,13 @@ private slots:
    void on_showPlayAreaCheckBox_stateChanged(int);
    void on_captureButton_clicked();
    void on_clearButton_clicked();
-
    void on_patternButton_clicked();
-
    void on_launchGameDisplay_clicked();
-
    void on_saveBaseline_clicked();
-
-   void on_blurSlider_valueChanged(int value);
-
    void on_saveConfig_clicked();
-
    void on_loadConfig_clicked();
+   void on_blurSlider_valueChanged(int value);
+   void on_threshSlider_valueChanged(int value);
 
 private:
     QGraphicsPixmapItem pixmap;

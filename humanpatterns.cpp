@@ -271,6 +271,12 @@ void HumanPatterns::on_blurSlider_valueChanged(int blurValue)
     config->blurValue = blurValue;
     ui->blurLabel->setText(qs.sprintf("Blur: %02d", blurValue));    
 }
+void HumanPatterns::on_threshSlider_valueChanged(int threshValue)
+{
+    QString qs;
+    config->threshValue = threshValue;
+    ui->threshLabel->setText(qs.sprintf("Thresh: %02d", threshValue));
+}
 
 void HumanPatterns::on_saveConfig_clicked()
 {
@@ -279,6 +285,7 @@ void HumanPatterns::on_saveConfig_clicked()
     fs.open(config->persistenceFile, FileStorage::WRITE);
 
     fs << "blurValue" << config->blurValue;
+    fs << "threshValue" << config->threshValue;
 
     fs.release();
 }
@@ -293,5 +300,12 @@ void HumanPatterns::on_loadConfig_clicked()
     on_blurSlider_valueChanged(config->blurValue);
     ui->blurSlider->setValue(config->blurValue);
 
+    fs["threshValue"] >> config->threshValue;
+    on_threshSlider_valueChanged(config->threshValue);
+    ui->threshSlider->setValue(config->threshValue);
+
     fs.release();
 }
+
+
+
