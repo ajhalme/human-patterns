@@ -62,7 +62,9 @@ HPMatchScore HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Ma
 {    
     cv::subtract(baseline, *source, basedelta);
     cv::cvtColor(basedelta, basedelta, COLOR_BGR2GRAY);
-    cv::blur(basedelta, basedelta, Size(5,5));
+
+    cv::blur(basedelta, basedelta, Size(config->blurValue, config->blurValue));
+
     cv::threshold(basedelta, thresh, 20, 255, THRESH_BINARY_INV);
     cv::cvtColor(basedelta, basedelta, COLOR_GRAY2BGR);
     cv::cvtColor(thresh, thresh, COLOR_GRAY2BGR);

@@ -33,6 +33,10 @@ public:
     const QString baselineFile = "../humanpatterns-qt/baseline.png";
     const QString debugFile = "../humanpatterns-qt/debug.png";
     const QString patternDirectory = "../humanpatterns-qt/patterns";
+
+    const string persistenceFile = "../humanpatterns-qt/config.yaml";
+
+    int blurValue = 5;
 };
 
 #endif // CONFIG_H

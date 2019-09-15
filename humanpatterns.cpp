@@ -26,7 +26,9 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 
-    devDebug();   
+    devDebug();
+
+    on_loadConfig_clicked();
 }
 
 void HumanPatterns::centerToScreen(QWidget* widget) {
@@ -230,9 +232,7 @@ void HumanPatterns::on_saveBaseline_clicked()
     config->saveBaseline = true;
 }
 
-
-
-void HumanPatterns::devDebug() { // DEBUG
+void HumanPatterns::devDebug() { // DEBUG0
     qApp->processEvents();
 
     pm->LoadBaselineFile();
@@ -263,4 +263,35 @@ void HumanPatterns::displayScore(HPMatchScore score)
     ui->scoreQuality->display(score.quality);
 
     gameDisplay->SetDisplay(score, &pm->thresh, pl->Current(), &pm->combined);
+}
+
+void HumanPatterns::on_blurSlider_valueChanged(int blurValue)
+{
+    QString qs;
+    config->blurValue = blurValue;
+    ui->blurLabel->setText(qs.sprintf("Blur: %02d", blurValue));    
+}
+
+void HumanPatterns::on_saveConfig_clicked()
+{
+    FileStorage fs(config->persistenceFile, FileStorage::WRITE);
+    //...
+    fs.open(config->persistenceFile, FileStorage::WRITE);
+
+    fs << "blurValue" << config->blurValue;
+
+    fs.release();
+}
+
+void HumanPatterns::on_loadConfig_clicked()
+{
+    FileStorage fs(config->persistenceFile, FileStorage::READ);
+
+    fs.open(config->persistenceFile, FileStorage::READ);
+
+    fs["blurValue"] >> config->blurValue;
+    on_blurSlider_valueChanged(config->blurValue);
+    ui->blurSlider->setValue(config->blurValue);
+
+    fs.release();
 }
