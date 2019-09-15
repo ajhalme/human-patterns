@@ -10,6 +10,7 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     this->setGeometry(100,100,1600,800);
 
     ui->captureGroup->setEnabled(false);
+    ui->gameGroup->setEnabled(false);
 
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
@@ -26,9 +27,10 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 
-    devDebug();
-
     on_loadConfig_clicked();
+
+    pm->LoadBaselineFile();
+    LoadPattern(config->debugPatternFile);
 }
 
 void HumanPatterns::centerToScreen(QWidget* widget) {
@@ -226,6 +228,8 @@ void HumanPatterns::on_launchGameDisplay_clicked()
     gameDisplay->setWindowFlags(Qt::Window);
     gameDisplay->showMaximized();
     centerToScreen(gameDisplay);
+    config->gameWindowOpen = true;
+    ui->gameGroup->setEnabled(true);
 }
 void HumanPatterns::on_saveBaseline_clicked()
 {
@@ -235,17 +239,12 @@ void HumanPatterns::on_saveBaseline_clicked()
 void HumanPatterns::devDebug() { // DEBUG0
     qApp->processEvents();
 
-    pm->LoadBaselineFile();
     pl->LoadPatternFile(QFileInfo("../humanpatterns-qt/patterns/hp-pattern-1.svg.png"));
 
     qApp->processEvents();
 
     Mat frame;
     Mat raw = imread(config->debugFile.toStdString());
-
-    qApp->processEvents();
-
-    on_launchGameDisplay_clicked();
 
     qApp->processEvents();
 
@@ -262,7 +261,8 @@ void HumanPatterns::displayScore(HPMatchScore score)
     ui->scoreNeg->display(score.score_false_pos);
     ui->scoreQuality->display(score.quality);
 
-    gameDisplay->SetDisplay(score, &pm->thresh, pl->Current(), &pm->combined);
+    if (config->gameWindowOpen)
+        gameDisplay->SetDisplay(score, &pm->thresh, pl->Current(), &pm->combined);
 }
 
 void HumanPatterns::on_blurSlider_valueChanged(int blurValue)
@@ -281,7 +281,6 @@ void HumanPatterns::on_threshSlider_valueChanged(int threshValue)
 void HumanPatterns::on_saveConfig_clicked()
 {
     FileStorage fs(config->persistenceFile, FileStorage::WRITE);
-    //...
     fs.open(config->persistenceFile, FileStorage::WRITE);
 
     fs << "blurValue" << config->blurValue;
@@ -293,7 +292,6 @@ void HumanPatterns::on_saveConfig_clicked()
 void HumanPatterns::on_loadConfig_clicked()
 {
     FileStorage fs(config->persistenceFile, FileStorage::READ);
-
     fs.open(config->persistenceFile, FileStorage::READ);
 
     fs["blurValue"] >> config->blurValue;
@@ -307,5 +305,12 @@ void HumanPatterns::on_loadConfig_clicked()
     fs.release();
 }
 
+void HumanPatterns::on_resetTimerButton_clicked()
+{
+    gameDisplay->ResetTimer();
+}
 
-
+void HumanPatterns::on_stopButton_clicked()
+{
+    gameDisplay->StopTimer();
+}

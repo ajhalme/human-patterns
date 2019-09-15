@@ -66,6 +66,8 @@ private slots:
    void on_loadConfig_clicked();
    void on_blurSlider_valueChanged(int value);
    void on_threshSlider_valueChanged(int value);
+   void on_resetTimerButton_clicked();
+   void on_stopButton_clicked();
 
 private:
     QGraphicsPixmapItem pixmap;

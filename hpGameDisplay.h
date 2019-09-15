@@ -22,6 +22,8 @@ public:
     ~HPGameDisplay();
 
     void SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined);
+    void ResetTimer();
+    void StopTimer();
 
 protected:
     Ui::HPGameDisplay *ui;
@@ -29,11 +31,12 @@ protected:
     QGraphicsPixmapItem combinedPixmap;
     QGraphicsPixmapItem patternPixmap;
     QGraphicsPixmapItem inputPixmap;
+    QTimer *timer = new QTimer(this);
+    void setTimer(int ticks);
+    void displayTicks();
 
 private slots:
     void tick();
-    void resetTimer(int ticks);
-    void displayTicks();
 };
 
 #endif // HPGAMEDISPLAY_H

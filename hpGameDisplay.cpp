@@ -21,15 +21,24 @@ HPGameDisplay::HPGameDisplay(QWidget *parent) :
     ui->scoreNegative->setDigitCount(2);
     ui->scoreQuality->setDigitCount(2);
 
-    ui->lcdTimer->setDigitCount(5);
-    resetTimer(5*60);
-
-    QTimer *timer = new QTimer(this);
-    timer->start(1000);
+    ui->lcdTimer->setDigitCount(5);    
+    setTimer(5*60);
     connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
 }
 
-void HPGameDisplay::resetTimer(int ticks)
+void HPGameDisplay::StopTimer()
+{
+    timer->stop();
+}
+
+void HPGameDisplay::ResetTimer()
+{
+    timer->stop();
+    timer->start(1000);
+    setTimer(5*60);
+}
+
+void HPGameDisplay::setTimer(int ticks)
 {
     tickCounter = ticks;
     displayTicks();
