@@ -28,6 +28,7 @@ void HPPatternMatcher::MaybeSaveBaselineFile(Mat *source)
 {
     if (!config->saveBaseline) return;
     SaveBaselineFile(source);
+    LoadBaselineFile();
     config->saveBaseline = false;
 }
 void HPPatternMatcher::SaveBaselineFile(Mat *source)

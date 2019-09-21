@@ -193,11 +193,12 @@ void HumanPatterns::on_showPlayAreaCheckBox_stateChanged(int)
 }
 void HumanPatterns::on_captureButton_clicked()
 {
-    config->capturePlayArea = !config->capturePlayArea;
+    config->capturePlayArea = true;
     ui->captureButton->setEnabled(false);
 }
 void HumanPatterns::on_clearButton_clicked()
 {
+    config->capturePlayArea = false;
     config->playAreaReady = false;
     ui->captureButton->setEnabled(true);
 }
