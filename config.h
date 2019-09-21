@@ -40,6 +40,7 @@ public:
 
     int blurValue = 5;
     int threshValue = 20;
+    bool audioOn = true;
 };
 
 #endif // CONFIG_H

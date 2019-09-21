@@ -20,6 +20,13 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     ui->scorePos->setDigitCount(2);
     ui->scoreQuality->setDigitCount(2);
 
+    startSound = new QMediaPlayer();
+    startSound->setMedia(QUrl("qrc:/sounds/sounds/start.wav"));
+    levelSound = new QMediaPlayer();
+    levelSound->setMedia(QUrl("qrc:/sounds/sounds/level.wav"));
+    finishSound = new QMediaPlayer();
+    finishSound->setMedia(QUrl("qrc:/sounds/sounds/complete.wav"));
+
     config = new HPConfig(HPConfig::SmallSize, HPConfig::PatternSize);
     fp = new HPFrameProcessor(config);
     pl = new HPPatternLoader(config);
@@ -314,4 +321,34 @@ void HumanPatterns::on_resetTimerButton_clicked()
 void HumanPatterns::on_stopButton_clicked()
 {
     gameDisplay->StopTimer();
+}
+
+void HumanPatterns::playSound(QMediaPlayer *player)
+{
+    if (!config->audioOn) return;
+
+    if (player->state() == QMediaPlayer::PlayingState)
+        player->stop();
+    player->setPosition(0);
+    player->play();
+}
+
+void HumanPatterns::on_startSoundButton_clicked()
+{
+    playSound(startSound);
+}
+
+void HumanPatterns::on_levelSoundButton_clicked()
+{
+    playSound(levelSound);
+}
+
+void HumanPatterns::on_finishSoundButton_clicked()
+{
+    playSound(finishSound);
+}
+
+void HumanPatterns::on_audioToggle_stateChanged(int value)
+{
+    config->audioOn = value > 0;
 }

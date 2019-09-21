@@ -488,6 +488,88 @@ Baseline</string>
       </item>
      </layout>
     </item>
+    <item row="2" column="6" rowspan="3">
+     <widget class="QGroupBox" name="audiobox">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Audio</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="startSoundButton">
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgb(245, 121, 0)</string>
+         </property>
+         <property name="text">
+          <string>&quot;Start&quot;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="audioToggle">
+         <property name="text">
+          <string>On/Off</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="levelSoundButton">
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgb(245, 121, 0)</string>
+         </property>
+         <property name="text">
+          <string>&quot;Level&quot;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="finishSoundButton">
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background: rgb(245, 121, 0)</string>
+         </property>
+         <property name="text">
+          <string>&quot;Finish&quot;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">

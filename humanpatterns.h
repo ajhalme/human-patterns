@@ -14,6 +14,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QMediaPlayer>
 
 #include "opencv2/opencv.hpp"
 #include "config.h"
@@ -51,6 +52,8 @@ protected:
     void processFrame(Mat *raw, Mat *source, Mat *target);
     void displayScore(HPMatchScore score);
 
+    void playSound(QMediaPlayer *player);
+
 protected slots:
    void handleStart();
 
@@ -69,6 +72,14 @@ private slots:
    void on_resetTimerButton_clicked();
    void on_stopButton_clicked();
 
+   void on_startSoundButton_clicked();
+
+   void on_levelSoundButton_clicked();
+
+   void on_finishSoundButton_clicked();
+
+   void on_audioToggle_stateChanged(int arg1);
+
 private:
     QGraphicsPixmapItem pixmap;
     cv::VideoCapture video;
@@ -81,6 +92,10 @@ private:
     HPPatternLoader *pl;
     HPPatternMatcher *pm;
     HPGameDisplay *gameDisplay;
+
+    QMediaPlayer *startSound;
+    QMediaPlayer *levelSound;
+    QMediaPlayer *finishSound;
 };
 
 #endif // HUMANPATTERNS_H
