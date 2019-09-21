@@ -34,6 +34,7 @@ public:
     const QString baselineFile = "../humanpatterns-qt/baseline.png";
     const QString debugFile = "../humanpatterns-qt/debug.png";
     const QString patternDirectory = "../humanpatterns-qt/patterns";
+    const QString gamesDirectory = "../humanpatterns-qt/games";
     const QString debugPatternFile = "../humanpatterns-qt/patterns/hp-pattern-1.svg.png";
 
     const string persistenceFile = "../humanpatterns-qt/config.yaml";

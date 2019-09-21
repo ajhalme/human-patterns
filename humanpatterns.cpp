@@ -10,7 +10,7 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     this->setGeometry(100,100,1600,800);
 
     ui->captureGroup->setEnabled(false);
-    ui->gameGroup->setEnabled(false);
+    // ui->gameGroup->setEnabled(false);
 
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
@@ -217,10 +217,15 @@ void HumanPatterns::LoadPattern(QString patternFileName)
     pl->LoadPatternFile(patternFile);
 }
 
+void HumanPatterns::LoadGame(QString gameDirectoryPath)
+{
+    QDir gameDirectory(gameDirectoryPath);
+    ui->gameDirectoryLabel->setText(gameDirectoryPath);
+    pl->LoadGameDirectory(gameDirectory);
+}
+
 void HumanPatterns::on_patternButton_clicked()
 {
-    // TODO: load directory
-
     QString fileName = QFileDialog::getOpenFileName(
                 this,
                 "Select Pattern File",
@@ -237,7 +242,7 @@ void HumanPatterns::on_launchGameDisplay_clicked()
     gameDisplay->showMaximized();
     centerToScreen(gameDisplay);
     config->gameWindowOpen = true;
-    ui->gameGroup->setEnabled(true);
+    //ui->gameGroup->setEnabled(true);
 }
 void HumanPatterns::on_saveBaseline_clicked()
 {
@@ -313,16 +318,6 @@ void HumanPatterns::on_loadConfig_clicked()
     fs.release();
 }
 
-void HumanPatterns::on_resetTimerButton_clicked()
-{
-    gameDisplay->ResetTimer();
-}
-
-void HumanPatterns::on_stopButton_clicked()
-{
-    gameDisplay->StopTimer();
-}
-
 void HumanPatterns::playSound(QMediaPlayer *player)
 {
     if (!config->audioOn) return;
@@ -337,18 +332,40 @@ void HumanPatterns::on_startSoundButton_clicked()
 {
     playSound(startSound);
 }
-
 void HumanPatterns::on_levelSoundButton_clicked()
 {
     playSound(levelSound);
 }
-
 void HumanPatterns::on_finishSoundButton_clicked()
 {
     playSound(finishSound);
 }
 
-void HumanPatterns::on_audioToggle_stateChanged(int value)
+void HumanPatterns::on_audioToggle_stateChanged(int state)
 {
-    config->audioOn = value > 0;
+    config->audioOn = state > 0;
+}
+
+void HumanPatterns::on_patternSelection_clicked()
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setOption(QFileDialog::ShowDirsOnly, true);
+
+    QString gameDirectory = dialog.getExistingDirectory(
+                this,
+                "Select Game Directory",
+                config->gamesDirectory);
+
+    LoadGame(gameDirectory);
+}
+
+void HumanPatterns::on_patternNext_clicked()
+{
+    pl->Next();
+}
+
+void HumanPatterns::on_patternPrevious_clicked()
+{
+    pl->Previous();
 }

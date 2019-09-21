@@ -2,6 +2,7 @@
 #define PATTERNLOADER_H
 
 #include <QFileInfo>
+#include <QDir>
 #include "opencv2/opencv.hpp"
 
 #include "config.h"
@@ -12,14 +13,22 @@ public:
     HPPatternLoader(HPConfig *config);
     ~HPPatternLoader();
 
-    void LoadPatternFile(QFileInfo patternFile);
     Mat *Current();
 
-protected:
-    HPConfig *config;
-    cv::Mat targetPattern;
+    void LoadPatternFile(QFileInfo patternFile);
+    void LoadGameDirectory(QDir gameDirectory);
+    void Next();
+    void Previous();
 
+protected:
+    cv::Mat targetPattern;
     void transformPattern(Mat *rawPattern);
+
+    HPConfig *config;
+    QDir currentGame;
+    uint patternIndex;
+    uint totalPatterns;
+    vector<cv::Mat> gamePatterns;
 };
 
 

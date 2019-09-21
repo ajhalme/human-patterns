@@ -36,6 +36,7 @@ public:
     ~HumanPatterns();
 
     void LoadPattern(QString patternFileName);
+    void LoadGame(QString gameDirectory);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -69,16 +70,15 @@ private slots:
    void on_loadConfig_clicked();
    void on_blurSlider_valueChanged(int value);
    void on_threshSlider_valueChanged(int value);
-   void on_resetTimerButton_clicked();
-   void on_stopButton_clicked();
-
    void on_startSoundButton_clicked();
-
    void on_levelSoundButton_clicked();
-
    void on_finishSoundButton_clicked();
+   void on_audioToggle_stateChanged(int state);
+   void on_patternSelection_clicked();
 
-   void on_audioToggle_stateChanged(int arg1);
+   void on_patternNext_clicked();
+
+   void on_patternPrevious_clicked();
 
 private:
     QGraphicsPixmapItem pixmap;
