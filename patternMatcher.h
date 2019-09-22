@@ -3,6 +3,7 @@
 
 #include "opencv2/opencv.hpp"
 
+#include "common.h"
 #include "config.h"
 #include "frameprocessor.h"
 
@@ -13,7 +14,7 @@ private:
     int PixelScore(Mat* frame);
 
 public:
-    HPMatchScore(Mat* base, Mat* pos, Mat* neg);
+    HPMatchScore(Mat* base, Mat* pos, Mat* neg, HPConfig *config);
 
     int score_pattern;
     int score_positive_diff;

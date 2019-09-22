@@ -7,13 +7,14 @@
 using namespace cv;
 
 namespace hp {
-    QPixmap static frame2Img(Mat *frame)
+    inline QPixmap frame2Img(Mat *frame)
     {
         QImage qimg(frame->data, frame->cols, frame->rows, static_cast<int>(frame->step),
-                    QImage::Format_RGB888);
+                QImage::Format_RGB888);
         return QPixmap::fromImage(qimg.rgbSwapped());
     }
 }
+
 
 enum HPGameMode {
     Free, // no pattern advance

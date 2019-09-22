@@ -10,7 +10,7 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     this->setGeometry(100,100,1600,800);
 
     ui->captureGroup->setEnabled(false);
-    // ui->gameGroup->setEnabled(false);
+    ui->gameGroup->setEnabled(false);
 
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
@@ -188,7 +188,40 @@ void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *outFrames)
 
     HPMatchScore score = pm->MatchSourceAndTarget(source, pl->Current(), outFrames);
     displayScore(score);
+
+    updateGame(score);
 }
+
+void HumanPatterns::updateGame(HPMatchScore score)
+{
+    if (score.quality < config->advanceThreshold) return;
+    if (config->gameComplete) return;
+
+    if (pl->OnLastPattern())
+        completeGame();
+    else
+        advanceGame();
+}
+
+void HumanPatterns::completeGame()
+{
+    playSound(finishSound);
+    config->gameComplete = true;
+    config->gamePaused = true;
+    gameDisplay->Finish();
+    ui->currentPatternLabel->setText("Done!");
+    ui->playPauseButton->setText("PLAY");
+
+    // TODO: Results display
+}
+
+void HumanPatterns::advanceGame()
+{
+    playSound(levelSound);
+    pl->Next();
+    ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
+}
+
 
 void HumanPatterns::on_showMarkersCheckBox_stateChanged(int)
 {
@@ -222,7 +255,7 @@ void HumanPatterns::LoadGame(QString gameDirectoryPath)
     QDir gameDirectory(gameDirectoryPath);
     ui->gameDirectoryEdit->setText(gameDirectoryPath);
     pl->LoadGameDirectory(gameDirectory);
-    pl->SetPatternState(ui->currentPatternLabel);
+    ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
 }
 
 void HumanPatterns::on_patternButton_clicked()
@@ -243,7 +276,7 @@ void HumanPatterns::on_launchGameDisplay_clicked()
     gameDisplay->showMaximized();
     centerToScreen(gameDisplay);
     config->gameWindowOpen = true;
-    //ui->gameGroup->setEnabled(true);
+    ui->gameGroup->setEnabled(true);
 }
 void HumanPatterns::on_saveBaseline_clicked()
 {
@@ -281,6 +314,9 @@ void HumanPatterns::on_saveConfig_clicked()
     fs << "blurValue" << config->blurValue;
     fs << "threshValue" << config->threshValue;
     fs << "gameMode" << config->gameMode;
+    fs << "advanceThreshold" << config->advanceThreshold;
+    fs << "audioOn" << config->audioOn;
+    fs << "minPatternScore" << config->minPatternScore;
 
     fs.release();
 }
@@ -304,6 +340,17 @@ void HumanPatterns::on_loadConfig_clicked()
         case HPGameMode::Simple: ui->gameSimple->setChecked(true); break;
         case HPGameMode::Challenge: ui->gameChallenge->setChecked(true); break;
     }
+
+    fs["audioOn"] >> config->audioOn;
+    ui->audioToggle->setChecked(config->audioOn);
+
+    fs["advanceThreshold"] >> config->advanceThreshold;
+    on_advanceSlider_valueChanged(config->advanceThreshold);
+    ui->advanceSlider->setValue(config->advanceThreshold);
+
+    fs["minPatternScore"] >> config->minPatternScore;
+    on_minAreaSlider_valueChanged(config->minPatternScore);
+    ui->minAreaSlider->setValue(config->minPatternScore);
 
     fs.release();
 }
@@ -353,29 +400,49 @@ void HumanPatterns::on_patternSelection_clicked()
 void HumanPatterns::on_patternNext_clicked()
 {
     pl->Next();
-    pl->SetPatternState(ui->currentPatternLabel);
+    ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
 }
 
 void HumanPatterns::on_patternPrevious_clicked()
 {
     pl->Previous();
-    pl->SetPatternState(ui->currentPatternLabel);
+    ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
 }
 
 void HumanPatterns::on_playPauseButton_clicked()
 {
+    if (config->gamePaused) {
+        playSound(this->startSound);
+        config->gameComplete = false;
+        config->gamePaused = false;
+        ui->playPauseButton->setText("PAUSE");
+    } else {
+        config->gamePaused = true;
+        ui->playPauseButton->setText("PLAY");
+    }
+
     if (gameDisplay == nullptr) return;
     gameDisplay->PlayPause();
 }
 
 void HumanPatterns::on_playResetButton_clicked()
 {
+    config->gameComplete = false;
+    config->gamePaused = true;
+
+    pl->Reset();
+    ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
+
     if (gameDisplay == nullptr) return;
     gameDisplay->Reset();
+
 }
 
 void HumanPatterns::on_playEndButton_clicked()
 {
+    config->gameComplete = true;
+    config->gamePaused = true;
+
     if (gameDisplay == nullptr) return;
     gameDisplay->Finish();
 }
@@ -396,4 +463,18 @@ void HumanPatterns::on_gameChallenge_clicked(bool checked)
 {
     if (!checked) return;
     config->gameMode = HPGameMode::Challenge;
+}
+
+void HumanPatterns::on_advanceSlider_valueChanged(int advanceThreshold)
+{
+    QString qs;
+    config->advanceThreshold = advanceThreshold;
+    ui->advanceLabel->setText(qs.sprintf("Adv.Q : %02d", advanceThreshold));
+}
+
+void HumanPatterns::on_minAreaSlider_valueChanged(int minArea)
+{
+    QString qs;
+    config->minPatternScore = minArea;
+    ui->minAreaLabel->setText(qs.sprintf("MinArea %04d", minArea));
 }

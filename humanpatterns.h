@@ -50,8 +50,12 @@ protected:
     std::string GetState();
 
     void processFrames();
-    void processFrame(Mat *raw, Mat *source, Mat *target);
+    void processFrame(Mat *raw, Mat *source, Mat *target);    
     void displayScore(HPMatchScore score);
+
+    void updateGame(HPMatchScore score);
+    void completeGame();
+    void advanceGame();
 
     void playSound(QMediaPlayer *player);
 
@@ -75,22 +79,17 @@ private slots:
    void on_finishSoundButton_clicked();
    void on_audioToggle_stateChanged(int state);
    void on_patternSelection_clicked();
-
    void on_patternNext_clicked();
-
    void on_patternPrevious_clicked();
-
    void on_playPauseButton_clicked();
-
    void on_playResetButton_clicked();
-
    void on_playEndButton_clicked();
-
    void on_gameFree_clicked(bool checked);
-
    void on_gameSimple_clicked(bool checked);
-
    void on_gameChallenge_clicked(bool checked);
+   void on_advanceSlider_valueChanged(int value);
+
+   void on_minAreaSlider_valueChanged(int value);
 
 private:
     QGraphicsPixmapItem pixmap;

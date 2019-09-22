@@ -94,19 +94,45 @@ HPMatchScore HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Ma
     vector<Mat> rows = {upper, lower};
     vconcat(rows, *outFrames);
 
-    return HPMatchScore(&targeti, &matchDiff, &matchDiff2);
+    return HPMatchScore(&targeti, &matchDiff, &matchDiff2, config);
 }
 
-HPMatchScore::HPMatchScore(Mat* base, Mat* pos, Mat* neg)
+HPMatchScore::HPMatchScore(Mat* base, Mat* pos, Mat* neg, HPConfig *config)
 {
     score_pattern = PixelScore(base);
     score_positive_diff = PixelScore(pos);
     score_negative_diff = PixelScore(neg);
 
     score_true_pos = static_cast<int>(100 - round((100.0 * score_positive_diff) / score_pattern));
+
+    int minScorePattern = config->minPatternScore * 10;
+    score_pattern = score_pattern < minScorePattern ? minScorePattern : score_pattern;
+
     score_false_pos = static_cast<int>(round((100.0 * score_negative_diff) / score_pattern));
-    quality = static_cast<int>(round(score_true_pos - (0.5)*score_false_pos));
+
+    QString debug = QString("%1 %2 %3 %4\n")
+            .arg(QString::number(score_positive_diff),
+                 QString::number(score_negative_diff),
+                 QString::number(score_pattern),
+                 QString::number(minScorePattern));
+    cout << debug.toStdString();
+    cout.flush();
+
+    switch (config->gameMode) {
+        case HPGameMode::Challenge:
+            quality = int(round(score_true_pos - (0.5)*score_false_pos));
+            break;
+        case HPGameMode::Simple:
+        case HPGameMode::Free:
+            quality = int(round(score_true_pos));
+            break;
+    }
+
     if (quality < 0) quality = 0;
+    if (quality > 99) quality = 99;
+    if (score_false_pos > 99) score_false_pos = 99;
+    if (score_true_pos > 99) score_true_pos = 99;
+
     spill = score_false_pos;
 }
 

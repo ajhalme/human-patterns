@@ -37,7 +37,7 @@ void HPGameDisplay::PlayPause()
 void HPGameDisplay::Finish()
 {
     timer->stop();
-    setTimer(0);
+    // TODO: final screen
 }
 
 void HPGameDisplay::Reset()

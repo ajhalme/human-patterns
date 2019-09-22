@@ -20,7 +20,9 @@ public:
     void LoadGameDirectory(QDir gameDirectory);
     void Next();
     void Previous();
-    void SetPatternState(QLabel *obj);
+    void Reset();
+    QString GetPatternStateSummary();
+    bool OnLastPattern();
 
 protected:
     cv::Mat targetPattern;

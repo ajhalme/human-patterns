@@ -2,4 +2,7 @@
 ---
 blurValue: 7
 threshValue: 20
-gameMode: 1
+gameMode: 2
+advanceThreshold: 60
+audioOn: 1
+minPatternScore: 151

@@ -65,18 +65,29 @@ void HPPatternLoader::Previous()
     targetPattern = gamePatterns.at(patternIndex);
 }
 
-void HPPatternLoader::SetPatternState(QLabel *obj)
+void HPPatternLoader::Reset()
 {
-    if (!hasPatterns)
-        obj->setText("N/A");
-    else
-    {
+    if (!hasPatterns) return;
+
+    patternIndex = 0;
+    targetPattern = gamePatterns.at(patternIndex);
+}
+
+QString HPPatternLoader::GetPatternStateSummary()
+{
+    if (!hasPatterns) {
+        return "N/A";
+    } else {
         QString idx = QString::number(patternIndex + 1);
         QString total = QString::number(totalPatterns);
-        obj->setText(QString("Pat %1/%2").arg(idx, total));
+        return QString("Pat %1/%2").arg(idx, total);
     }
 }
 
+bool HPPatternLoader::OnLastPattern()
+{
+    return patternIndex + 1 == totalPatterns;
+}
 
 void HPPatternLoader::transformPattern(Mat *rawPattern)
 {
