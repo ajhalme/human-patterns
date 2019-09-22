@@ -110,14 +110,6 @@ HPMatchScore::HPMatchScore(Mat* base, Mat* pos, Mat* neg, HPConfig *config)
 
     score_false_pos = static_cast<int>(round((100.0 * score_negative_diff) / score_pattern));
 
-    QString debug = QString("%1 %2 %3 %4\n")
-            .arg(QString::number(score_positive_diff),
-                 QString::number(score_negative_diff),
-                 QString::number(score_pattern),
-                 QString::number(minScorePattern));
-    cout << debug.toStdString();
-    cout.flush();
-
     switch (config->gameMode) {
         case HPGameMode::Challenge:
             quality = int(round(score_true_pos - (0.5)*score_false_pos));

@@ -6,3 +6,4 @@ gameMode: 2
 advanceThreshold: 60
 audioOn: 1
 minPatternScore: 151
+rotation: 1

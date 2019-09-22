@@ -317,6 +317,7 @@ void HumanPatterns::on_saveConfig_clicked()
     fs << "advanceThreshold" << config->advanceThreshold;
     fs << "audioOn" << config->audioOn;
     fs << "minPatternScore" << config->minPatternScore;
+    fs << "rotation" << config->rotation;
 
     fs.release();
 }
@@ -351,6 +352,10 @@ void HumanPatterns::on_loadConfig_clicked()
     fs["minPatternScore"] >> config->minPatternScore;
     on_minAreaSlider_valueChanged(config->minPatternScore);
     ui->minAreaSlider->setValue(config->minPatternScore);
+
+    fs["rotation"] >> config->rotation;
+    config->rotation--; // adjust for click
+    on_rotationButton_clicked();
 
     fs.release();
 }
@@ -478,3 +483,11 @@ void HumanPatterns::on_minAreaSlider_valueChanged(int minArea)
     config->minPatternScore = minArea;
     ui->minAreaLabel->setText(qs.sprintf("MinArea %04d", minArea));
 }
+
+void HumanPatterns::on_rotationButton_clicked()
+{
+    QString qs;
+    config->rotation = (1 + config->rotation) % config->RotationOrientations;
+    ui->rotationButton->setText(qs.sprintf("Rot %d", config->rotation));
+}
+

@@ -14,6 +14,7 @@ public:
     const static int SmallSize = 250;
     const static int PatternSize = 750;
     const static int HPImageType = CV_8UC3;
+    const static int RotationOrientations = 4;
 
 public:
     HPConfig(int edge, int patternEdge);
@@ -47,6 +48,7 @@ public:
     HPGameMode gameMode = HPGameMode::Free;
     int advanceThreshold = 70;
     int minPatternScore = 1500;
+    int rotation = 0;
 
     bool gameComplete = true;
     bool gamePaused = true;

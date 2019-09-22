@@ -101,4 +101,9 @@ void HPFrameProcessor::ProcessRaw(Mat *frame, Mat *output)
 void HPFrameProcessor::ProcessPlayArea(Mat *frame, Mat *output)
 {
     applySquareTransform(frame, output, playAreaCorners);
+    if (config->rotation) {
+        cv::RotateFlags rot = config->rotation == 1 ? ROTATE_90_CLOCKWISE
+                : (config->rotation == 2 ? ROTATE_180 : ROTATE_90_COUNTERCLOCKWISE);
+        cv::rotate(*output, *output, rot);
+    }
 }

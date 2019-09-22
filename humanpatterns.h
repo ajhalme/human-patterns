@@ -91,6 +91,8 @@ private slots:
 
    void on_minAreaSlider_valueChanged(int value);
 
+   void on_rotationButton_clicked();
+
 private:
     QGraphicsPixmapItem pixmap;
     cv::VideoCapture video;
