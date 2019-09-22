@@ -36,7 +36,6 @@ HumanPatterns::HumanPatterns(QWidget *parent)
 
     on_loadConfig_clicked();
 
-    pm->LoadBaselineFile();
     LoadGame(config->debugGameDirectory);
 }
 
