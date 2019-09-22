@@ -22,8 +22,9 @@ public:
     ~HPGameDisplay();
 
     void SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined);
-    void ResetTimer();
-    void StopTimer();
+    void PlayPause();
+    void Reset();
+    void Finish();
 
 protected:
     Ui::HPGameDisplay *ui;

@@ -15,5 +15,10 @@ namespace hp {
     }
 }
 
+enum HPGameMode {
+    Free, // no pattern advance
+    Simple, // easy scoring
+    Challenge // standard scoring
+};
 
 #endif // COMMON_H

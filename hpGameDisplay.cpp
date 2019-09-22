@@ -26,15 +26,23 @@ HPGameDisplay::HPGameDisplay(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
 }
 
-void HPGameDisplay::StopTimer()
+void HPGameDisplay::PlayPause()
 {
-    timer->stop();
+    if (timer->isActive())
+        timer->stop();
+    else
+        timer->start(1000);
 }
 
-void HPGameDisplay::ResetTimer()
+void HPGameDisplay::Finish()
 {
     timer->stop();
-    timer->start(1000);
+    setTimer(0);
+}
+
+void HPGameDisplay::Reset()
+{
+    timer->stop();
     setTimer(5*60);
 }
 

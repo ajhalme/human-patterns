@@ -37,7 +37,7 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     on_loadConfig_clicked();
 
     pm->LoadBaselineFile();
-    LoadPattern(config->debugPatternFile);
+    LoadGame(config->debugGameDirectory);
 }
 
 void HumanPatterns::centerToScreen(QWidget* widget) {
@@ -220,8 +220,9 @@ void HumanPatterns::LoadPattern(QString patternFileName)
 void HumanPatterns::LoadGame(QString gameDirectoryPath)
 {
     QDir gameDirectory(gameDirectoryPath);
-    ui->gameDirectoryLabel->setText(gameDirectoryPath);
+    ui->gameDirectoryEdit->setText(gameDirectoryPath);
     pl->LoadGameDirectory(gameDirectory);
+    pl->SetPatternState(ui->currentPatternLabel);
 }
 
 void HumanPatterns::on_patternButton_clicked()
@@ -247,25 +248,6 @@ void HumanPatterns::on_launchGameDisplay_clicked()
 void HumanPatterns::on_saveBaseline_clicked()
 {
     config->saveBaseline = true;
-}
-
-void HumanPatterns::devDebug() { // DEBUG0
-    qApp->processEvents();
-
-    pl->LoadPatternFile(QFileInfo("../humanpatterns-qt/patterns/hp-pattern-1.svg.png"));
-
-    qApp->processEvents();
-
-    Mat frame;
-    Mat raw = imread(config->debugFile.toStdString());
-
-    qApp->processEvents();
-
-    HPMatchScore score = pm->MatchSourceAndTarget(&raw, pl->Current(), &frame);
-    displayScore(score);
-
-    QPixmap img = hp::frame2Img(&frame);
-    pixmap.setPixmap(img);
 }
 
 void HumanPatterns::displayScore(HPMatchScore score)
@@ -298,6 +280,7 @@ void HumanPatterns::on_saveConfig_clicked()
 
     fs << "blurValue" << config->blurValue;
     fs << "threshValue" << config->threshValue;
+    fs << "gameMode" << config->gameMode;
 
     fs.release();
 }
@@ -314,6 +297,13 @@ void HumanPatterns::on_loadConfig_clicked()
     fs["threshValue"] >> config->threshValue;
     on_threshSlider_valueChanged(config->threshValue);
     ui->threshSlider->setValue(config->threshValue);
+
+    fs["gameMode"] >> config->gameMode;
+    switch (config->gameMode) {
+        case HPGameMode::Free: ui->gameFree->setChecked(true); break;
+        case HPGameMode::Simple: ui->gameSimple->setChecked(true); break;
+        case HPGameMode::Challenge: ui->gameChallenge->setChecked(true); break;
+    }
 
     fs.release();
 }
@@ -363,9 +353,47 @@ void HumanPatterns::on_patternSelection_clicked()
 void HumanPatterns::on_patternNext_clicked()
 {
     pl->Next();
+    pl->SetPatternState(ui->currentPatternLabel);
 }
 
 void HumanPatterns::on_patternPrevious_clicked()
 {
     pl->Previous();
+    pl->SetPatternState(ui->currentPatternLabel);
+}
+
+void HumanPatterns::on_playPauseButton_clicked()
+{
+    if (gameDisplay == nullptr) return;
+    gameDisplay->PlayPause();
+}
+
+void HumanPatterns::on_playResetButton_clicked()
+{
+    if (gameDisplay == nullptr) return;
+    gameDisplay->Reset();
+}
+
+void HumanPatterns::on_playEndButton_clicked()
+{
+    if (gameDisplay == nullptr) return;
+    gameDisplay->Finish();
+}
+
+void HumanPatterns::on_gameFree_clicked(bool checked)
+{
+    if (!checked) return;
+    config->gameMode = HPGameMode::Free;
+}
+
+void HumanPatterns::on_gameSimple_clicked(bool checked)
+{
+    if (!checked) return;
+    config->gameMode = HPGameMode::Simple;
+}
+
+void HumanPatterns::on_gameChallenge_clicked(bool checked)
+{
+    if (!checked) return;
+    config->gameMode = HPGameMode::Challenge;
 }

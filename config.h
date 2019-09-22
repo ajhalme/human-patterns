@@ -3,6 +3,7 @@
 
 #include "opencv2/opencv.hpp"
 #include <QString>
+#include "common.h"
 
 using namespace cv;
 using namespace std; 
@@ -36,12 +37,15 @@ public:
     const QString patternDirectory = "../humanpatterns-qt/patterns";
     const QString gamesDirectory = "../humanpatterns-qt/games";
     const QString debugPatternFile = "../humanpatterns-qt/patterns/hp-pattern-1.svg.png";
+    const QString debugGameDirectory = "../humanpatterns-qt/games";
 
     const string persistenceFile = "../humanpatterns-qt/config.yaml";
 
     int blurValue = 5;
     int threshValue = 20;
     bool audioOn = true;
+
+    HPGameMode gameMode = HPGameMode::Free;
 };
 
 #endif // CONFIG_H

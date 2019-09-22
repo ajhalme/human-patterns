@@ -17,6 +17,7 @@
 #include <QMediaPlayer>
 
 #include "opencv2/opencv.hpp"
+#include "common.h"
 #include "config.h"
 #include "frameprocessor.h"
 #include "patternLoader.h"
@@ -42,7 +43,6 @@ protected:
     void closeEvent(QCloseEvent *event);
 
     void centerToScreen(QWidget* widget);
-    void devDebug();
     void openVideoByCameraIndex();
     void openVideoByAddress();    
     void toggleButtonString();
@@ -80,6 +80,18 @@ private slots:
 
    void on_patternPrevious_clicked();
 
+   void on_playPauseButton_clicked();
+
+   void on_playResetButton_clicked();
+
+   void on_playEndButton_clicked();
+
+   void on_gameFree_clicked(bool checked);
+
+   void on_gameSimple_clicked(bool checked);
+
+   void on_gameChallenge_clicked(bool checked);
+
 private:
     QGraphicsPixmapItem pixmap;
     cv::VideoCapture video;
@@ -91,7 +103,7 @@ private:
     HPFrameProcessor *fp;
     HPPatternLoader *pl;
     HPPatternMatcher *pm;
-    HPGameDisplay *gameDisplay;
+    HPGameDisplay *gameDisplay = nullptr;
 
     QMediaPlayer *startSound;
     QMediaPlayer *levelSound;

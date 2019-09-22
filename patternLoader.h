@@ -3,6 +3,7 @@
 
 #include <QFileInfo>
 #include <QDir>
+#include <QLabel>
 #include "opencv2/opencv.hpp"
 
 #include "config.h"
@@ -19,6 +20,7 @@ public:
     void LoadGameDirectory(QDir gameDirectory);
     void Next();
     void Previous();
+    void SetPatternState(QLabel *obj);
 
 protected:
     cv::Mat targetPattern;
@@ -26,8 +28,10 @@ protected:
 
     HPConfig *config;
     QDir currentGame;
+
     uint patternIndex;
     uint totalPatterns;
+    bool hasPatterns;
     vector<cv::Mat> gamePatterns;
 };
 

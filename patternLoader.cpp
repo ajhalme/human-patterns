@@ -21,10 +21,11 @@ void HPPatternLoader::LoadPatternFile(QFileInfo patternFile)
 void HPPatternLoader::LoadGameDirectory(QDir gameDirectory)
 {
     currentGame = gameDirectory;
-    totalPatterns = currentGame.count() - 2 - 1;
     gamePatterns.clear();
-    auto gps = gameDirectory.entryList();
+
+    QStringList gps = gameDirectory.entryList();
     Mat M = getPerspectiveTransform(config->patternShape, config->targetShape);
+    Mat patternTemplate = Mat(config->targetSize, HPConfig::HPImageType);
 
     for_each(gps.begin(), gps.end(),
         [&] ( QString gamePattern ) {
@@ -32,7 +33,6 @@ void HPPatternLoader::LoadGameDirectory(QDir gameDirectory)
             QFileInfo gpFile(gpPath);
             if (!gpFile.isFile()) return;
 
-            Mat patternTemplate = Mat(config->targetSize, HPConfig::HPImageType);
             Mat rawPattern = cv::imread(gpPath.toStdString(), cv::IMREAD_COLOR);
             warpPerspective(rawPattern, patternTemplate, M, config->targetSize);
             gamePatterns.push_back(patternTemplate.clone());
@@ -40,23 +40,43 @@ void HPPatternLoader::LoadGameDirectory(QDir gameDirectory)
     );
 
     patternIndex = 0;
-    if (totalPatterns > 0)
+    totalPatterns = uint(gamePatterns.size());
+    hasPatterns = totalPatterns > 0;
+
+    if (hasPatterns)
         targetPattern = gamePatterns.at(patternIndex);
 }
 
 void HPPatternLoader::Next()
 {
-    if (patternIndex < totalPatterns)
+    if (!hasPatterns) return;
+
+    if (patternIndex < totalPatterns - 1)
         patternIndex++;
     targetPattern = gamePatterns.at(patternIndex);
 }
 
 void HPPatternLoader::Previous()
 {
+    if (!hasPatterns) return;
+
     if (patternIndex > 0)
         patternIndex--;
     targetPattern = gamePatterns.at(patternIndex);
 }
+
+void HPPatternLoader::SetPatternState(QLabel *obj)
+{
+    if (!hasPatterns)
+        obj->setText("N/A");
+    else
+    {
+        QString idx = QString::number(patternIndex + 1);
+        QString total = QString::number(totalPatterns);
+        obj->setText(QString("Pat %1/%2").arg(idx, total));
+    }
+}
+
 
 void HPPatternLoader::transformPattern(Mat *rawPattern)
 {
