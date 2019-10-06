@@ -113,9 +113,6 @@ void HumanPatterns::openVideoByAddress()
 
 void HumanPatterns::handleStart()
 {
-    // rtsp://192.168.0.111:554/11
-    // rtsp://192.168.0.111:554/12
-
     ui->startButton->setEnabled(false);
 
     qApp->processEvents();
@@ -216,6 +213,8 @@ void HumanPatterns::completeGame()
 
 void HumanPatterns::advanceGame()
 {
+    if (config->gameMode == HPGameMode::Free) return;
+
     playSound(levelSound);
     pl->Next();
     ui->currentPatternLabel->setText(pl->GetPatternStateSummary());

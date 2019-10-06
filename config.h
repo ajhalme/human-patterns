@@ -33,14 +33,14 @@ public:
     bool gameWindowOpen = false;
 
     bool saveBaseline = false;
-    const QString baselineFile = "../humanpatterns-qt/baseline.png";
-    const QString debugFile = "../humanpatterns-qt/debug.png";
-    const QString patternDirectory = "../humanpatterns-qt/patterns";
-    const QString gamesDirectory = "../humanpatterns-qt/games";
-    const QString debugPatternFile = "../humanpatterns-qt/patterns/hp-pattern-1.svg.png";
-    const QString debugGameDirectory = "../humanpatterns-qt/games/debug";
+    const QString baselineFile = "/home/ajhalme/projects/humanpatterns-qt/baseline.png";
+    const QString debugFile = "/home/ajhalme/projects/humanpatterns-qt/debug.png";
+    const QString patternDirectory = "/home/ajhalme/projects/humanpatterns-qt/patterns";
+    const QString gamesDirectory = "/home/ajhalme/projects/humanpatterns-qt/games";
+    const QString debugPatternFile = "/home/ajhalme/projects/humanpatterns-qt/patterns/hp-pattern-1.svg.png";
+    const QString debugGameDirectory = "/home/ajhalme/projects/humanpatterns-qt/games/debug";
 
-    const string persistenceFile = "../humanpatterns-qt/config.yaml";
+    const string persistenceFile = "/home/ajhalme/projects/humanpatterns-qt/config.yaml";
 
     int blurValue = 5;
     int threshValue = 20;
