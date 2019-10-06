@@ -74,11 +74,7 @@ HPGameDisplay::~HPGameDisplay()
     delete ui;
 }
 
-QPixmap scaleToView(QGraphicsView *view, QPixmap pmap)
-{
-    QSize sz = view->size();
-    return pmap.scaled(sz.width() - 1, sz.height() - 4, Qt::KeepAspectRatio);
-}
+
 
 void HPGameDisplay::SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined)
 {
@@ -87,11 +83,11 @@ void HPGameDisplay::SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat
     ui->scoreQuality->display(score.quality);
 
     QPixmap pmap = hp::frame2Img(combined);
-    combinedPixmap.setPixmap(scaleToView(ui->combinedView, pmap));
+    combinedPixmap.setPixmap(hp::scaleToView(ui->combinedView, pmap));
 
     pmap = hp::frame2Img(source);
-    inputPixmap.setPixmap(scaleToView(ui->inputView, pmap));
+    inputPixmap.setPixmap(hp::scaleToView(ui->inputView, pmap));
 
     pmap = hp::frame2Img(target);
-    patternPixmap.setPixmap(scaleToView(ui->patternView, pmap));
+    patternPixmap.setPixmap(hp::scaleToView(ui->patternView, pmap));
 }

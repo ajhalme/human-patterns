@@ -169,7 +169,7 @@ void HumanPatterns::processFrames()
             qApp->processEvents();
 
             QPixmap img = hp::frame2Img(&frame);
-            pixmap.setPixmap(img);
+            pixmap.setPixmap(hp::scaleToView(ui->graphicsView, img));
         }
         qApp->processEvents();
     }
