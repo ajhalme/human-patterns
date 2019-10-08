@@ -11,7 +11,7 @@ HumanPatterns::HumanPatterns(QWidget *parent, QString *configFile)
     this->setGeometry(100,100,1600,800);
 
     ui->captureGroup->setEnabled(false);
-    ui->gameGroup->setEnabled(false);
+    // ui->gameGroup->setEnabled(false);
 
     ui->graphicsView->setScene(new QGraphicsScene(this));
     ui->graphicsView->scene()->addItem(&pixmap);
@@ -146,11 +146,12 @@ void HumanPatterns::completeGame()
     sp->PlayFinish();
     config->gameComplete = true;
     config->gamePaused = true;
-    gameDisplay->Finish();
-    ui->currentPatternLabel->setText("Done!");
-    ui->playPauseButton->setText("PLAY");
 
-    // TODO: Results display
+    if (gameDisplay != nullptr)
+        gameDisplay->Finish();
+
+    ui->currentPatternLabel->setText("Done!");
+    ui->playPauseButton->setText("PLAY");    
 }
 
 void HumanPatterns::advanceGame()
@@ -193,7 +194,7 @@ void HumanPatterns::LoadGame(QString gameDirectoryPath)
 
 void HumanPatterns::on_launchGameDisplay_clicked()
 {   
-    gameDisplay = new HPGameDisplay(this);
+    gameDisplay = new HPGameDisplay(this, config);
     gameDisplay->setWindowFlags(Qt::Window);
     gameDisplay->showMaximized();
     gameDisplay->CenterToScreen();
@@ -336,6 +337,7 @@ void HumanPatterns::on_playResetButton_clicked()
 {
     config->gameComplete = false;
     config->gamePaused = true;
+    ui->playPauseButton->setText("PLAY");
 
     pl->Reset();
     ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
@@ -350,8 +352,10 @@ void HumanPatterns::on_playEndButton_clicked()
     config->gameComplete = true;
     config->gamePaused = true;
 
+    completeGame();
+
     if (gameDisplay == nullptr) return;
-    gameDisplay->Finish();
+    gameDisplay->Finish();    
 }
 
 void HumanPatterns::on_gameFree_clicked(bool checked)

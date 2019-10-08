@@ -2,10 +2,11 @@
 #include "gameDisplay.h"
 #include "ui_hpgamedisplay.h"
 
-HPGameDisplay::HPGameDisplay(QWidget *parent) :
+HPGameDisplay::HPGameDisplay(QWidget *parent, HPConfig *config) :
     QWidget(parent),
     ui(new Ui::HPGameDisplay)
 {
+    this->config = config;
     ui->setupUi(this);
 
     ui->combinedView->setScene(new QGraphicsScene(this));
@@ -22,7 +23,10 @@ HPGameDisplay::HPGameDisplay(QWidget *parent) :
     ui->scoreQuality->setDigitCount(2);
 
     ui->lcdTimer->setDigitCount(5);    
-    setTimer(5*60);
+    Reset();
+
+    prepareFinalScreen();
+
     connect(timer, SIGNAL(timeout()), this, SLOT(tick()));
 }
 
@@ -37,13 +41,38 @@ void HPGameDisplay::PlayPause()
 void HPGameDisplay::Finish()
 {
     timer->stop();
-    // TODO: final screen
+    showFinalScreen();
+}
+
+void HPGameDisplay::showFinalScreen()
+{
+    combinedPixmap.setPixmap(hp::scaleToView(ui->combinedView, *finalScreen));
+}
+
+void HPGameDisplay::prepareFinalScreen()
+{
+    finalScreen = new QPixmap(config->gameEdgeSize, config->gameEdgeSize);
+    QPainter painter(finalScreen);
+    painter.fillRect(finalScreen->rect(), QColor(255, 255, 255));
+    painter.setFont( QFont("Arial", 20) );
+    painter.drawText(QPoint(25, 100), "Congratulations!" );
+    painter.setFont( QFont("Arial", 12) );
+    painter.drawText(QPoint(30, 150), "HUMAN PATTERNS 2019" );
+}
+
+void HPGameDisplay::resetView()
+{
+    QPixmap blank(config->gameEdgeSize, config->gameEdgeSize);
+    QPainter painter(&blank);
+    painter.fillRect(blank.rect(), QColor(255, 255, 255));
+    combinedPixmap.setPixmap(hp::scaleToView(ui->combinedView, blank));
 }
 
 void HPGameDisplay::Reset()
 {
     timer->stop();
     setTimer(5*60);
+    resetView();
 }
 
 void HPGameDisplay::setTimer(int ticks)
@@ -76,6 +105,8 @@ HPGameDisplay::~HPGameDisplay()
 
 void HPGameDisplay::SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined)
 {
+    if (!timer->isActive()) return;
+
     ui->scorePositive->display(score.score_true_pos);
     ui->scoreNegative->display(score.score_false_pos);
     ui->scoreQuality->display(score.quality);

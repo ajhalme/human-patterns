@@ -8,6 +8,7 @@
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 
+#include "config.h"
 #include "patternMatcher.h"
 
 namespace Ui {
@@ -19,7 +20,7 @@ class HPGameDisplay : public QWidget
     Q_OBJECT
 
 public:
-    explicit HPGameDisplay(QWidget *parent = nullptr);
+    explicit HPGameDisplay(QWidget *parent = nullptr, HPConfig *config = nullptr);
     ~HPGameDisplay();
 
     void SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined);
@@ -29,6 +30,7 @@ public:
     void Finish();
 
 protected:
+    HPConfig *config;
     Ui::HPGameDisplay *ui;
     int tickCounter;
     QGraphicsPixmapItem combinedPixmap;
@@ -37,6 +39,12 @@ protected:
     QTimer *timer = new QTimer(this);
     void setTimer(int ticks);
     void displayTicks();
+
+    QPixmap *finalScreen;
+    void prepareFinalScreen();
+    void showFinalScreen();
+
+    void resetView();
 
 private slots:
     void tick();
