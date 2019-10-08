@@ -127,7 +127,6 @@ void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *outFrames)
 
     HPMatchScore score = pm->MatchSourceAndTarget(source, pl->Current(), outFrames);
     displayScore(score);
-
     updateGame(score);
 }
 
@@ -184,30 +183,12 @@ void HumanPatterns::on_clearButton_clicked()
     ui->captureButton->setEnabled(true);
 }
 
-void HumanPatterns::LoadPattern(QString patternFileName)
-{
-    QFileInfo patternFile(patternFileName);
-    ui->patternLabel->setText(patternFile.completeBaseName());
-    pl->LoadPatternFile(patternFile);
-}
-
 void HumanPatterns::LoadGame(QString gameDirectoryPath)
 {
     QDir gameDirectory(gameDirectoryPath);
     ui->gameDirectoryEdit->setText(gameDirectoryPath);
     pl->LoadGameDirectory(gameDirectory);
     ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
-}
-
-void HumanPatterns::on_patternButton_clicked()
-{
-    QString fileName = QFileDialog::getOpenFileName(
-                this,
-                "Select Pattern File",
-                config->patternDirectory,
-                "HP Pattern (*.png);;All Files (*)");
-
-    LoadPattern(fileName);
 }
 
 void HumanPatterns::on_launchGameDisplay_clicked()
@@ -319,7 +300,8 @@ void HumanPatterns::on_patternSelection_clicked()
                 "Select Game Directory",
                 config->gamesDirectory);
 
-    LoadGame(gameDirectory);
+    if (gameDirectory.length() > 1)
+        LoadGame(gameDirectory);
 }
 
 void HumanPatterns::on_patternNext_clicked()

@@ -21,7 +21,7 @@
 #include "patternLoader.h"
 #include "patternMatcher.h"
 #include "soundPlayer.h"
-#include "hpGameDisplay.h"
+#include "gameDisplay.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class HumanPatterns; }
@@ -36,7 +36,6 @@ public:
     HumanPatterns(QWidget *parent = nullptr, QString *configFile = nullptr);
     ~HumanPatterns();
 
-    void LoadPattern(QString patternFileName);
     void LoadGame(QString gameDirectory);
 
 protected:
@@ -44,10 +43,7 @@ protected:
 
     void applyConfig();
 
-    void centerToScreen(QWidget* widget);
-    void openVideoByAddress();    
-    void toggleButtonString();
-
+    void openVideoByAddress();
     void processFrames();
     void processFrame(Mat *raw, Mat *source, Mat *target);    
     void displayScore(HPMatchScore score);
@@ -64,7 +60,6 @@ private slots:
    void on_showPlayAreaCheckBox_stateChanged(int);
    void on_captureButton_clicked();
    void on_clearButton_clicked();
-   void on_patternButton_clicked();
    void on_launchGameDisplay_clicked();
    void on_saveBaseline_clicked();
    void on_saveConfig_clicked();

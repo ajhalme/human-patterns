@@ -1,5 +1,5 @@
 #include "common.h"
-#include "hpGameDisplay.h"
+#include "gameDisplay.h"
 #include "ui_hpgamedisplay.h"
 
 HPGameDisplay::HPGameDisplay(QWidget *parent) :
