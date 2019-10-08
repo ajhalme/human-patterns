@@ -24,7 +24,8 @@ SOURCES += \
     main.cpp \
     humanpatterns.cpp \
     patternLoader.cpp \
-    patternMatcher.cpp
+    patternMatcher.cpp \
+    soundPlayer.cpp
 
 HEADERS += \
     common.h \
@@ -33,7 +34,8 @@ HEADERS += \
     hpGameDisplay.h \
     humanpatterns.h \
     patternLoader.h \
-    patternMatcher.h
+    patternMatcher.h \
+    soundPlayer.h
 
 FORMS += \
     hpgamedisplay.ui \

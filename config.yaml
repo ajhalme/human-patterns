@@ -2,7 +2,9 @@
 ---
 baseDir: "/home/ajhalme/projects/humanpatterns-qt/"
 patternDirectory: "/home/ajhalme/projects/humanpatterns-qt/patterns"
-gamesDirectory: "/home/ajhalme/projects/humanpatterns-qt/games"    
+gamesDirectory: "/home/ajhalme/projects/humanpatterns-qt/games"
+defaultGamesDirectory: "/home/ajhalme/projects/humanpatterns-qt/games/mozfest/"
+cameraAddress: "rtsp://192.168.0.111:554/11"
 blurValue: 8
 threshValue: 20
 gameMode: 0

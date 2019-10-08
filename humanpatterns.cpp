@@ -21,43 +21,16 @@ HumanPatterns::HumanPatterns(QWidget *parent, QString *configFile)
     ui->scorePos->setDigitCount(2);
     ui->scoreQuality->setDigitCount(2);
 
-    startSound = new QMediaPlayer();
-    startSound->setMedia(QUrl("qrc:/sounds/sounds/start.wav"));
-    levelSound = new QMediaPlayer();
-    levelSound->setMedia(QUrl("qrc:/sounds/sounds/level.wav"));
-    finishSound = new QMediaPlayer();
-    finishSound->setMedia(QUrl("qrc:/sounds/sounds/complete.wav"));
-
     fp = new HPFrameProcessor(config);
     pl = new HPPatternLoader(config);
     pm = new HPPatternMatcher(config);
+    sp = new HPSoundPlayer(config);
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 
     applyConfig();
 }
 
-void HumanPatterns::centerToScreen(QWidget* widget) {
-  if (!widget)
-    return;
-  QList<QScreen *> screens = QGuiApplication::screens();
-  if (screens.length() < 2) return;
-
-  QScreen *external;
-  QScreen *current = QGuiApplication::screenAt(QCursor::pos());
-  if (current->name() != screens[0]->name())
-      external = screens[0];
-  else
-      external = screens[1];
-
-  QRect geom = external->availableGeometry();
-
-  int desk_x = geom.width();
-  int desk_y = geom.height();
-  int x = widget->width();
-  int y = widget->height();
-  widget->move(desk_x/2 - x/2 + geom.left(), desk_y/2 - y/2 + geom.top());
-}
 
 HumanPatterns::~HumanPatterns()
 {
@@ -79,27 +52,9 @@ void HumanPatterns::closeEvent(QCloseEvent *event)
     }
 }
 
-void HumanPatterns::openVideoByCameraIndex()
-{
-    bool isCamera;
-    int cameraIndex = ui->videoSourceEdit->text().toInt(&isCamera);
-    if(isCamera)
-    {
-        if(!video.open(cameraIndex))
-        {
-            QMessageBox::critical(this,
-                "Camera Error",
-                "Make sure you entered a correct camera index,"
-                "<br>or that the camera is not being accessed by another program!");
-            return;
-        }
-    }
-}
-
 void HumanPatterns::openVideoByAddress()
 {
-    std::string address = GetAddress();
-    if(!video.open(address))
+    if(!video.open(config->cameraAddress))
     {
         QMessageBox::critical(this,
             "Video Error",
@@ -132,16 +87,6 @@ void HumanPatterns::handleStart()
     qApp->processEvents();
 
     processFrames();
-}
-
-std::string HumanPatterns::GetAddress()
-{
-    return ui->videoSourceEdit->text().trimmed().toStdString();
-}
-
-std::string HumanPatterns::GetState()
-{
-    return ui->startButton->text().trimmed().toStdString();
 }
 
 void HumanPatterns::processFrames()
@@ -199,7 +144,7 @@ void HumanPatterns::updateGame(HPMatchScore score)
 
 void HumanPatterns::completeGame()
 {
-    playSound(finishSound);
+    sp->PlayFinish();
     config->gameComplete = true;
     config->gamePaused = true;
     gameDisplay->Finish();
@@ -213,7 +158,7 @@ void HumanPatterns::advanceGame()
 {
     if (config->gameMode == HPGameMode::Free) return;
 
-    playSound(levelSound);
+    sp->PlayLevelUp();
     pl->Next();
     ui->currentPatternLabel->setText(pl->GetPatternStateSummary());
 }
@@ -270,7 +215,7 @@ void HumanPatterns::on_launchGameDisplay_clicked()
     gameDisplay = new HPGameDisplay(this);
     gameDisplay->setWindowFlags(Qt::Window);
     gameDisplay->showMaximized();
-    centerToScreen(gameDisplay);
+    gameDisplay->CenterToScreen();
     config->gameWindowOpen = true;
     ui->gameGroup->setEnabled(true);
 }
@@ -332,7 +277,11 @@ void HumanPatterns::applyConfig()
     config->rotation--; // adjust for click
     on_rotationButton_clicked();
 
-    // LoadGame(config->debugGameDirectory);
+    if (config->defaultGamesDirectory.length() > 0)
+        LoadGame(config->defaultGamesDirectory);
+
+    if (config->cameraAddress.length() > 0)
+        ui->videoSourceEdit->setText(QString::fromStdString(config->cameraAddress));
 }
 
 void HumanPatterns::on_loadConfig_clicked()
@@ -341,27 +290,17 @@ void HumanPatterns::on_loadConfig_clicked()
     applyConfig();
 }
 
-void HumanPatterns::playSound(QMediaPlayer *player)
-{
-    if (!config->audioOn) return;
-
-    if (player->state() == QMediaPlayer::PlayingState)
-        player->stop();
-    player->setPosition(0);
-    player->play();
-}
-
 void HumanPatterns::on_startSoundButton_clicked()
 {
-    playSound(startSound);
+    sp->PlayStart();
 }
 void HumanPatterns::on_levelSoundButton_clicked()
 {
-    playSound(levelSound);
+    sp->PlayLevelUp();
 }
 void HumanPatterns::on_finishSoundButton_clicked()
 {
-    playSound(finishSound);
+    sp->PlayFinish();
 }
 
 void HumanPatterns::on_audioToggle_stateChanged(int state)
@@ -398,7 +337,7 @@ void HumanPatterns::on_patternPrevious_clicked()
 void HumanPatterns::on_playPauseButton_clicked()
 {
     if (config->gamePaused) {
-        playSound(this->startSound);
+        sp->PlayStart();
         config->gameComplete = false;
         config->gamePaused = false;
         ui->playPauseButton->setText("PAUSE");

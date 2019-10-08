@@ -37,10 +37,13 @@ public:
     bool gameComplete = true;
     bool gamePaused = true;
 
-    QString baseDir;
-    QString baselineFile;
-    QString patternDirectory;
-    QString gamesDirectory;
+    QString baseDir = "";
+    QString baselineFile = "";
+    QString patternDirectory = "";
+    QString gamesDirectory = "";
+    QString defaultGamesDirectory = "";
+
+    string cameraAddress = "";
 
     int gameEdgeSize = 250;
     int patternEdgeSize = 750;

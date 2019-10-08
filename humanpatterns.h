@@ -5,7 +5,6 @@
 #include <QDesktopWidget>
 #include <QGuiApplication>
 #include <QScreen>
-
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
@@ -14,7 +13,6 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QMediaPlayer>
 
 #include "opencv2/opencv.hpp"
 #include "common.h"
@@ -22,6 +20,7 @@
 #include "frameprocessor.h"
 #include "patternLoader.h"
 #include "patternMatcher.h"
+#include "soundPlayer.h"
 #include "hpGameDisplay.h"
 
 QT_BEGIN_NAMESPACE
@@ -46,11 +45,8 @@ protected:
     void applyConfig();
 
     void centerToScreen(QWidget* widget);
-    void openVideoByCameraIndex();
     void openVideoByAddress();    
     void toggleButtonString();
-    std::string GetAddress();
-    std::string GetState();
 
     void processFrames();
     void processFrame(Mat *raw, Mat *source, Mat *target);    
@@ -59,8 +55,6 @@ protected:
     void updateGame(HPMatchScore score);
     void completeGame();
     void advanceGame();
-
-    void playSound(QMediaPlayer *player);
 
 protected slots:
    void handleStart();
@@ -91,9 +85,7 @@ private slots:
    void on_gameSimple_clicked(bool checked);
    void on_gameChallenge_clicked(bool checked);
    void on_advanceSlider_valueChanged(int value);
-
    void on_minAreaSlider_valueChanged(int value);
-
    void on_rotationButton_clicked();
 
 private:
@@ -107,11 +99,9 @@ private:
     HPFrameProcessor *fp;
     HPPatternLoader *pl;
     HPPatternMatcher *pm;
-    HPGameDisplay *gameDisplay = nullptr;
+    HPSoundPlayer *sp;
 
-    QMediaPlayer *startSound;
-    QMediaPlayer *levelSound;
-    QMediaPlayer *finishSound;
+    HPGameDisplay *gameDisplay = nullptr;
 };
 
 #endif // HUMANPATTERNS_H

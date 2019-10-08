@@ -74,8 +74,6 @@ HPGameDisplay::~HPGameDisplay()
     delete ui;
 }
 
-
-
 void HPGameDisplay::SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined)
 {
     ui->scorePositive->display(score.score_true_pos);
@@ -91,3 +89,26 @@ void HPGameDisplay::SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat
     pmap = hp::frame2Img(target);
     patternPixmap.setPixmap(hp::scaleToView(ui->patternView, pmap));
 }
+
+void HPGameDisplay::CenterToScreen() {
+  QList<QScreen *> screens = QGuiApplication::screens();
+  if (screens.length() < 2) return;
+
+  QScreen *current, *external;
+
+  current = QGuiApplication::screenAt(QCursor::pos());
+
+  if (current->name() != screens[0]->name())
+      external = screens[0];
+  else
+      external = screens[1];
+
+  QRect geom = external->availableGeometry();
+
+  int desk_x = geom.width();
+  int desk_y = geom.height();
+  int x = this->width();
+  int y = this->height();
+  this->move(desk_x/2 - x/2 + geom.left(), desk_y/2 - y/2 + geom.top());
+}
+

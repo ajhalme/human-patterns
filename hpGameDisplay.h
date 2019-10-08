@@ -1,6 +1,7 @@
 #ifndef HPGAMEDISPLAY_H
 #define HPGAMEDISPLAY_H
 
+#include <QScreen>
 #include <QTimer>
 #include <QWidget>
 #include <QLCDNumber>
@@ -22,6 +23,7 @@ public:
     ~HPGameDisplay();
 
     void SetDisplay(HPMatchScore score, Mat *source, Mat* target, Mat* combined);
+    void CenterToScreen();
     void PlayPause();
     void Reset();
     void Finish();

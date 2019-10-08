@@ -64,27 +64,35 @@ void HPConfig::Load()
     fs["minPatternScore"] >> minPatternScore;
     fs["rotation"] >> rotation;
 
-    string baseDirStr, patternDirectoryStr, gamesDirectoryStr;
-    fs["baseDir"] >> baseDirStr;
-    baseDir = QString::fromStdString(baseDirStr);
+    string readStr;
+    fs["baseDir"] >> readStr;
+    baseDir = QString::fromStdString(readStr);
     baselineFile = baseDir + "baseline.png";
-    fs["patternDirectory"] >> patternDirectoryStr;
-    patternDirectory = QString::fromStdString(patternDirectoryStr);
-    fs["gamesDirectory"] >> gamesDirectoryStr;
-    gamesDirectory = QString::fromStdString(gamesDirectoryStr);
+    fs["patternDirectory"] >> readStr;
+    patternDirectory = QString::fromStdString(readStr);
+    fs["gamesDirectory"] >> readStr;
+    gamesDirectory = QString::fromStdString(readStr);
+    fs["defaultGamesDirectory"] >> readStr;
+    defaultGamesDirectory = QString::fromStdString(readStr);
+    fs["cameraAddress"] >> cameraAddress;
 
     fs.release();
 }
 
 void HPConfig::Print()
 {
-    cout << "blurValue" << blurValue;
-    cout << "threshValue" << threshValue;
-    cout << "gameMode" << gameMode;
-    cout << "advanceThreshold" << advanceThreshold;
-    cout << "audioOn" << audioOn;
-    cout << "minPatternScore" << minPatternScore;
-    cout << "rotation" << rotation;
+    cout << "blurValue " << blurValue << endl;
+    cout << "threshValue " << threshValue << endl;
+    cout << "gameMode " << gameMode << endl;
+    cout << "advanceThreshold " << advanceThreshold << endl;
+    cout << "audioOn " << audioOn << endl;
+    cout << "minPatternScore " << minPatternScore << endl;
+    cout << "rotation " << rotation << endl;
+
+    cout << "baseDir " << baseDir.toStdString() << endl;
+    cout << "patternDirectory " << patternDirectory.toStdString() << endl;
+    cout << "gamesDirectory " << gamesDirectory.toStdString() << endl;
+    cout << "defaultGamesDirectory " << defaultGamesDirectory.toStdString() << endl;
 }
 
 HPConfig::~HPConfig()
