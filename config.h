@@ -11,14 +11,16 @@ using namespace std;
 class HPConfig
 {
 public:
-    const static int SmallSize = 250;
-    const static int PatternSize = 750;
     const static int HPImageType = CV_8UC3;
     const static int RotationOrientations = 4;
 
 public:
-    HPConfig(int edge, int patternEdge);
+    HPConfig(QString *hpConfigFile);
     ~HPConfig();
+
+    void Save();
+    void Load();
+    void Print();
 
     Size targetSize;
     vector<Point2f> targetShape;
@@ -29,19 +31,19 @@ public:
     bool showDetectedPlayArea = false;
 
     bool capturePlayArea = false;
-    bool playAreaReady = false;
     bool gameWindowOpen = false;
-
+    bool playAreaReady = false;
     bool saveBaseline = false;
-    const QString baselineFile = "/home/ajhalme/projects/humanpatterns-qt/baseline.png";
-    const QString debugFile = "/home/ajhalme/projects/humanpatterns-qt/debug.png";
-    const QString patternDirectory = "/home/ajhalme/projects/humanpatterns-qt/patterns";
-    const QString gamesDirectory = "/home/ajhalme/projects/humanpatterns-qt/games";
-    const QString debugPatternFile = "/home/ajhalme/projects/humanpatterns-qt/patterns/hp-pattern-1.svg.png";
-    const QString debugGameDirectory = "/home/ajhalme/projects/humanpatterns-qt/games/debug";
+    bool gameComplete = true;
+    bool gamePaused = true;
 
-    const string persistenceFile = "/home/ajhalme/projects/humanpatterns-qt/config.yaml";
+    QString baseDir;
+    QString baselineFile;
+    QString patternDirectory;
+    QString gamesDirectory;
 
+    int gameEdgeSize = 250;
+    int patternEdgeSize = 750;
     int blurValue = 5;
     int threshValue = 20;
     bool audioOn = true;
@@ -50,8 +52,9 @@ public:
     int minPatternScore = 1500;
     int rotation = 0;
 
-    bool gameComplete = true;
-    bool gamePaused = true;
+private:
+    QString configFile;
+    void setSizesShapes(int edge, int patternEdge);
 };
 
 #endif // CONFIG_H

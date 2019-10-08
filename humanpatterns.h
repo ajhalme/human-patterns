@@ -33,7 +33,8 @@ class HumanPatterns : public QMainWindow
     Q_OBJECT
 
 public:
-    HumanPatterns(QWidget *parent = nullptr);
+    // HumanPatterns(QWidget *parent = nullptr);
+    HumanPatterns(QWidget *parent = nullptr, QString *configFile = nullptr);
     ~HumanPatterns();
 
     void LoadPattern(QString patternFileName);
@@ -41,6 +42,8 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+
+    void applyConfig();
 
     void centerToScreen(QWidget* widget);
     void openVideoByCameraIndex();

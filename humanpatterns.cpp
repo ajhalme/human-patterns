@@ -2,10 +2,11 @@
 #include "humanpatterns.h"
 #include "ui_humanpatterns.h"
 
-HumanPatterns::HumanPatterns(QWidget *parent)
+HumanPatterns::HumanPatterns(QWidget *parent, QString *configFile)
     : QMainWindow(parent)
     , ui(new Ui::HumanPatterns)
-{    
+    , config(new HPConfig(configFile))
+{       
     ui->setupUi(this);
     this->setGeometry(100,100,1600,800);
 
@@ -27,16 +28,13 @@ HumanPatterns::HumanPatterns(QWidget *parent)
     finishSound = new QMediaPlayer();
     finishSound->setMedia(QUrl("qrc:/sounds/sounds/complete.wav"));
 
-    config = new HPConfig(HPConfig::SmallSize, HPConfig::PatternSize);
     fp = new HPFrameProcessor(config);
     pl = new HPPatternLoader(config);
     pm = new HPPatternMatcher(config);
 
     connect(ui->startButton, SIGNAL (released()), this, SLOT (handleStart()));
 
-    on_loadConfig_clicked();
-
-    LoadGame(config->debugGameDirectory);
+    applyConfig();
 }
 
 void HumanPatterns::centerToScreen(QWidget* widget) {
@@ -306,56 +304,41 @@ void HumanPatterns::on_threshSlider_valueChanged(int threshValue)
 
 void HumanPatterns::on_saveConfig_clicked()
 {
-    FileStorage fs(config->persistenceFile, FileStorage::WRITE);
-    fs.open(config->persistenceFile, FileStorage::WRITE);
-
-    fs << "blurValue" << config->blurValue;
-    fs << "threshValue" << config->threshValue;
-    fs << "gameMode" << config->gameMode;
-    fs << "advanceThreshold" << config->advanceThreshold;
-    fs << "audioOn" << config->audioOn;
-    fs << "minPatternScore" << config->minPatternScore;
-    fs << "rotation" << config->rotation;
-
-    fs.release();
+    config->Save();
 }
 
-void HumanPatterns::on_loadConfig_clicked()
+void HumanPatterns::applyConfig()
 {
-    FileStorage fs(config->persistenceFile, FileStorage::READ);
-    fs.open(config->persistenceFile, FileStorage::READ);
-
-    fs["blurValue"] >> config->blurValue;
     on_blurSlider_valueChanged(config->blurValue);
     ui->blurSlider->setValue(config->blurValue);
 
-    fs["threshValue"] >> config->threshValue;
     on_threshSlider_valueChanged(config->threshValue);
     ui->threshSlider->setValue(config->threshValue);
 
-    fs["gameMode"] >> config->gameMode;
     switch (config->gameMode) {
         case HPGameMode::Free: ui->gameFree->setChecked(true); break;
         case HPGameMode::Simple: ui->gameSimple->setChecked(true); break;
         case HPGameMode::Challenge: ui->gameChallenge->setChecked(true); break;
     }
 
-    fs["audioOn"] >> config->audioOn;
     ui->audioToggle->setChecked(config->audioOn);
 
-    fs["advanceThreshold"] >> config->advanceThreshold;
     on_advanceSlider_valueChanged(config->advanceThreshold);
     ui->advanceSlider->setValue(config->advanceThreshold);
 
-    fs["minPatternScore"] >> config->minPatternScore;
     on_minAreaSlider_valueChanged(config->minPatternScore);
     ui->minAreaSlider->setValue(config->minPatternScore);
 
-    fs["rotation"] >> config->rotation;
     config->rotation--; // adjust for click
     on_rotationButton_clicked();
 
-    fs.release();
+    // LoadGame(config->debugGameDirectory);
+}
+
+void HumanPatterns::on_loadConfig_clicked()
+{
+    config->Load();
+    applyConfig();
 }
 
 void HumanPatterns::playSound(QMediaPlayer *player)
