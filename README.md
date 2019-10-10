@@ -13,6 +13,7 @@ HumanPatternV1 is a C++ application that leverages the UI library Qt, and the co
 To run the game, you need a video source (designed for RTSP, any webcam should get you going) as well as AruCo markers (from the default marker set). Four markers define the play area.
 
 Built with:
+
 - OpenCV 5.12.4
 - Qt Creator 4.10.0 (Qt 5.13.1)
 - Ubuntu Mate 18.04
@@ -57,9 +58,9 @@ The more gamelike play modes are the two version of a timed challenge. There are
 
 The Challenge mode works just like Simple, but players are also penalised for excess or overspill inputs that *do not* overlap with the target pattern. The scoring is based on pixel counting (an OpenCV standard): Simple is the percentage of pattern covered, while Challenge is the difference between the Simple score and scaled relative overspill (the amount of area covered outside the pattern, relative to the size of the target pattern). That is,
 
-	- In freeplay, *Q* = 0
-	- In Simple, *Q* = *S*
-	- In Challenge, *Q* = *S* - (0.5 * E)
+	- In freeplay, Q = 0
+	- In Simple, Q = S
+	- In Challenge, Q = S - (0.5 * E)
 
 where *Q* is the play score, *S* is the Simple score (relative area of covered pattern pixels to pattern area), and *E* is Excess (relative area of covered non-pattern pixels to pattern area).
 
@@ -77,11 +78,11 @@ TBW
 
 #### Appendix A: Pattern sets
 
- - "debug" : a few basic patterns
- - "mozfest" : letters M, O, Z, F, E (in reverse), S, and T as patterns
- - "mozfest2019" : 'mosfest' and four numbers, too
- - "mozfest_low" : 'mosfest', but with the pattern aligned to bottom, in case the game is played horizontally
- - "mozfest2019_low" : ditto for 'mozfest2019'
- - "shapes" : a library of untested shapes, for building sets that make sense for specific groups of players
+ - *"debug"* : a few basic patterns
+ - *"mozfest"* : letters M, O, Z, F, E (in reverse), S, and T as patterns
+ - *"mozfest2019"* : 'mosfest' and four numbers, too
+ - *"mozfest_low"* : 'mosfest', but with the pattern aligned to bottom, in case the game is played horizontally
+ - *"mozfest2019_low"* : ditto for 'mozfest2019'
+ - *"shapes"* : a library of untested shapes, for building sets that make sense for specific groups of players
  
-Each target pattern is a black&white png image (can be whatever OpenCV can parse), 750x750 pixels, with the black pixels forming the target shape. The patterns in a directory are played in alphabetical filename order.
+Each target pattern is a B&W png image (can be whatever OpenCV can parse), 750x750 pixels, with the black pixels forming the target shape. The patterns in a directory are played in alphabetical filename order.
