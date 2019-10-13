@@ -1,4 +1,5 @@
 
 route -n
-sudo ifmetric enx00e04c063bcb 800
+MYEDEVICE=$(ls /sys/class/net/ | xargs | tr -s ' ' '\n' | grep "^e")
+sudo ifmetric $MYEDEVICE 800
 route -n
