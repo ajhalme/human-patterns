@@ -46,6 +46,13 @@ void HPConfig::Save()
     fs << "audioOn" << audioOn;
     fs << "minPatternScore" << minPatternScore;
     fs << "rotation" << rotation;
+    fs << "hackValue" << hackValue;
+
+    fs << "baseDir " << baseDir.toStdString();
+    fs << "patternDirectory " << patternDirectory.toStdString();
+    fs << "gamesDirectory " << gamesDirectory.toStdString();
+    fs << "defaultGamesDirectory " << defaultGamesDirectory.toStdString();
+    fs << "cameraAddress " << cameraAddress;
 
     fs.release();
 }
@@ -63,6 +70,7 @@ void HPConfig::Load()
     fs["advanceThreshold"] >> advanceThreshold;
     fs["minPatternScore"] >> minPatternScore;
     fs["rotation"] >> rotation;
+    fs["hackValue"] >> hackValue;
 
     string readStr;
     fs["baseDir"] >> readStr;
@@ -88,11 +96,13 @@ void HPConfig::Print()
     cout << "audioOn " << audioOn << endl;
     cout << "minPatternScore " << minPatternScore << endl;
     cout << "rotation " << rotation << endl;
+    cout << "hackValue " << hackValue << endl;
 
     cout << "baseDir " << baseDir.toStdString() << endl;
     cout << "patternDirectory " << patternDirectory.toStdString() << endl;
     cout << "gamesDirectory " << gamesDirectory.toStdString() << endl;
     cout << "defaultGamesDirectory " << defaultGamesDirectory.toStdString() << endl;
+    cout << "cameraAddress " << cameraAddress << endl;
 }
 
 HPConfig::~HPConfig()

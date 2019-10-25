@@ -54,6 +54,7 @@ public:
     int advanceThreshold = 70;
     int minPatternScore = 1500;
     int rotation = 0;
+    int hackValue = 50;
 
 private:
     QString configFile;

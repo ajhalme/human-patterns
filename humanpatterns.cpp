@@ -115,6 +115,22 @@ void HumanPatterns::processFrames()
     }
 }
 
+void static StarkWhiteToBlack(Mat *mat, HPConfig *config)
+{
+    Mat mask = Mat(mat->size(), HPConfig::HPImageType, double(0));
+
+    Scalar col = Scalar(200, 50, 50);
+
+    double brightBound = config->hackValue;
+    Scalar bright = Scalar(brightBound, brightBound, brightBound);
+
+    double notBrightBound = 255; //config->hackValue;
+    Scalar notBright = Scalar(notBrightBound, notBrightBound, notBrightBound);
+
+    cv::inRange(*mat, bright, notBright, mask);
+    mat->setTo(col, mask);
+}
+
 void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *outFrames)
 {
     if (!config->playAreaReady) {
@@ -124,6 +140,8 @@ void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *outFrames)
 
     fp->ProcessPlayArea(raw, source);
     pm->MaybeSaveBaselineFile(source);
+
+    StarkWhiteToBlack(source, config);
 
     HPMatchScore score = pm->MatchSourceAndTarget(source, pl->Current(), outFrames);
     displayScore(score);
@@ -241,6 +259,9 @@ void HumanPatterns::applyConfig()
 
     on_threshSlider_valueChanged(config->threshValue);
     ui->threshSlider->setValue(config->threshValue);
+
+    on_hackSlider_valueChanged(config->hackValue);
+    ui->hackSlider->setValue(config->hackValue);
 
     switch (config->gameMode) {
         case HPGameMode::Free: ui->gameFree->setChecked(true); break;
@@ -397,3 +418,9 @@ void HumanPatterns::on_rotationButton_clicked()
     ui->rotationButton->setText(qs.sprintf("Rot %d", config->rotation));
 }
 
+void HumanPatterns::on_hackSlider_valueChanged(int value)
+{
+    QString qs;
+    config->hackValue = value;
+    ui->hackLabel->setText(qs.sprintf("Hack %04d", value));
+}

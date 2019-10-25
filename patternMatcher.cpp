@@ -61,13 +61,14 @@ void static TintFrames(Mat *target, Mat *targeti, Mat *matchDiff, Mat* matchDiff
 
 HPMatchScore HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames)
 {    
-    cv::subtract(baseline, *source, basedelta);
-    cv::cvtColor(basedelta, basedelta, COLOR_BGR2GRAY);
+    cv::subtract(baseline, *source, basedelta);    
 
-    cv::blur(basedelta, basedelta, Size(config->blurValue, config->blurValue));
+    cv::cvtColor(basedelta, basedelta, COLOR_BGR2GRAY);
+    cv::blur(basedelta, basedelta, Size(config->blurValue, config->blurValue));    
 
     cv::threshold(basedelta, thresh, config->threshValue, 255, THRESH_BINARY_INV);
     cv::cvtColor(basedelta, basedelta, COLOR_GRAY2BGR);
+
     cv::cvtColor(thresh, thresh, COLOR_GRAY2BGR);
     cv::bitwise_not(basedelta, basedelta);
 

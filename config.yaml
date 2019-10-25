@@ -1,14 +1,15 @@
 %YAML:1.0
 ---
-baseDir: "/home/ajhalme/projects/humanpatterns-qt/"
-patternDirectory: "/home/ajhalme/projects/humanpatterns-qt/patterns"
-gamesDirectory: "/home/ajhalme/projects/humanpatterns-qt/games"
-defaultGamesDirectory: "/home/ajhalme/projects/humanpatterns-qt/games/mozfest/"
-cameraAddress: "rtsp://192.168.0.111:554/11"
-blurValue: 8
-threshValue: 20
+blurValue: 10
+threshValue: 42
 gameMode: 0
 advanceThreshold: 60
 audioOn: 1
 minPatternScore: 151
 rotation: 0
+hackValue: 200
+baseDir : /home/ajhalme/projects/humanpatterns-qt/
+patternDirectory : /home/ajhalme/projects/humanpatterns-qt/patterns
+gamesDirectory : /home/ajhalme/projects/humanpatterns-qt/games
+defaultGamesDirectory : /home/ajhalme/projects/humanpatterns-qt/games/mozfest/
+cameraAddress : "rtsp://192.168.0.111:554/11"
