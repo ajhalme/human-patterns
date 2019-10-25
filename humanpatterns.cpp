@@ -115,7 +115,7 @@ void HumanPatterns::processFrames()
     }
 }
 
-void static StarkWhiteToBlack(Mat *mat, HPConfig *config)
+void static StarkWhiteToDark(Mat *mat, HPConfig *config)
 {
     Mat mask = Mat(mat->size(), HPConfig::HPImageType, double(0));
 
@@ -139,9 +139,10 @@ void HumanPatterns::processFrame(Mat *raw, Mat *source, Mat *outFrames)
     }
 
     fp->ProcessPlayArea(raw, source);
-    pm->MaybeSaveBaselineFile(source);
 
-    StarkWhiteToBlack(source, config);
+    StarkWhiteToDark(source, config);
+
+    pm->MaybeSaveBaselineFile(source);
 
     HPMatchScore score = pm->MatchSourceAndTarget(source, pl->Current(), outFrames);
     displayScore(score);

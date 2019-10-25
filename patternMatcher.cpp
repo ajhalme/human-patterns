@@ -60,7 +60,7 @@ void static TintFrames(Mat *target, Mat *targeti, Mat *matchDiff, Mat* matchDiff
 }
 
 HPMatchScore HPPatternMatcher::MatchSourceAndTarget(Mat *source, Mat *target, Mat *outFrames)
-{    
+{
     cv::subtract(baseline, *source, basedelta);    
 
     cv::cvtColor(basedelta, basedelta, COLOR_BGR2GRAY);
