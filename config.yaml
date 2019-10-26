@@ -3,10 +3,10 @@
 blurValue: 10
 threshValue: 42
 gameMode: 0
-advanceThreshold: 60
+advanceThreshold: 50
 audioOn: 1
 minPatternScore: 151
-rotation: 0
+rotation: 3
 hackValue: 200
 baseDir : /home/ajhalme/projects/humanpatterns-qt/
 patternDirectory : /home/ajhalme/projects/humanpatterns-qt/patterns
