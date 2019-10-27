@@ -119,15 +119,22 @@ void static StarkWhiteToDark(Mat *mat, HPConfig *config)
 {
     Mat mask = Mat(mat->size(), HPConfig::HPImageType, double(0));
 
-    Scalar col = Scalar(200, 50, 50);
-
+    // any bright value
     double brightBound = config->hackValue;
-    Scalar bright = Scalar(brightBound, brightBound, brightBound);
-
     double notBrightBound = 255; //config->hackValue;
+    Scalar bright = Scalar(brightBound, brightBound, brightBound);    
     Scalar notBright = Scalar(notBrightBound, notBrightBound, notBrightBound);
-
     cv::inRange(*mat, bright, notBright, mask);
+
+    // any high-sat, high-luminosity
+    Mat hsv; // hue, saturation, "value"~'luminosity'
+    Mat mask2 = Mat(mat->size(), HPConfig::HPImageType, double(0));
+    cvtColor(*mat, hsv, cv::COLOR_BGR2HSV);
+    inRange(hsv, Scalar(0, 32, 32), Scalar(255, 255, 255), mask2);
+
+    mask = mask + mask2;
+
+    Scalar col = Scalar(200, 50, 50); // blue
     mat->setTo(col, mask);
 }
 
