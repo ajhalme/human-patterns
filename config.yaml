@@ -4,7 +4,7 @@ blurValue: 10
 threshValue: 42
 gameMode: 0
 advanceThreshold: 50
-audioOn: 1
+audioOn: 0
 minPatternScore: 151
 rotation: 3
 hackValue: 200
